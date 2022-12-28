@@ -2,7 +2,54 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <fstream>
 #include <string>
+
+struct ShaderSource
+{
+    std::string vs;
+    std::string ps;
+};
+
+ShaderSource ParseShader(const std::string& filePath)
+{
+    enum class ShaderType
+    {
+        Invalid = -1, Vertex, Pixel
+    };
+
+    std::ifstream file;
+    file.open(filePath);
+    if (!file.is_open())
+    {
+        std::cout << "ERROR : File ( " << filePath << " ) could not be opened\n";
+        return {};
+    }
+
+    std::string line;
+    ShaderType mode = ShaderType::Invalid;
+    std::string sources[2];
+    while (getline(file, line))
+    {
+        if (line.find("#shader")!=std::string::npos)
+        {
+            if (line.find("vertex") != std::string::npos)
+                mode = ShaderType::Vertex;
+            else if (line.find("pixel") != std::string::npos)
+                mode = ShaderType::Pixel;
+            else
+                mode = ShaderType::Invalid;
+        }
+        else
+        {
+            line += '\n';
+            sources[(int)mode] += line;
+        }
+    }
+
+    file.close();
+    return { sources[(int)ShaderType::Vertex], sources[(int)ShaderType::Pixel]};
+}
 
 unsigned int CompileShader(const std::string& shader, unsigned int type)
 {
@@ -55,7 +102,7 @@ int main()
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(960, 720, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -80,41 +127,33 @@ int main()
     float positions[] =
     {
         -0.5f, -0.5f,
-        0.0f, 0.5f,
-        0.5f, -0.5f
+        -0.5f, 0.5f,
+        0.5f, 0.5f,
+        0.5f, -0.5f,
+    };
+
+    unsigned int indices[] =
+    {
+        0,1,2,
+        0,2,3
     };
 
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6, positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, positions, GL_STATIC_DRAW);
+
+    unsigned int ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (const void*)0);
 
 
-    std::string vs = R"(
-#version 330 core
-
-layout (location = 0) in vec4 position;
-
-void main()
-{
-    gl_Position = position;
-}
-)";
-
-
-    std::string ps = R"(
-#version 330 core
-
-void main()
-{
-    gl_FragColor = vec4(0.0, 0.0, 1.0, 0.0);
-}
-)";
-
-    unsigned int program = CreateProgram(vs, ps);
+    ShaderSource shader = ParseShader("Source/Shaders/Basic.glsl");
+    unsigned int program = CreateProgram(shader.vs, shader.ps);
     glUseProgram(program);
 
 
@@ -124,8 +163,12 @@ void main()
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
+        if (glfwGetKey(window, GLFW_KEY_ENTER))
+        {
+            glfwSetWindowShouldClose(window, true);
+        }
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -133,6 +176,8 @@ void main()
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    glDeleteProgram(program);
 
     glfwTerminate();
 

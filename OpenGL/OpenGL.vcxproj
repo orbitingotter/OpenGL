@@ -161,6 +161,9 @@
   <ItemGroup>
     <ClCompile Include="Source\App.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Shaders\Basic.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
