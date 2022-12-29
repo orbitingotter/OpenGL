@@ -108,3 +108,27 @@ void Shader::Unbind() const
 {
 	glUseProgram(0);
 }
+
+
+// manage uniforms
+
+int Shader::GetUniformLocation(const std::string& name)
+{
+	if (mUniformCache.find(name) != mUniformCache.end())
+		return mUniformCache[name];
+
+	int location = glGetUniformLocation(mID, name.c_str());
+	if (location == -1)
+	{
+		std::cout << "WARNING : Uniform \"" << name << "\" does not exist in shader " << mFilePath << std::endl;
+ 	}
+
+	mUniformCache[name] = location;
+
+	return location;
+}
+
+void Shader::SetUniform(const std::string& name, float v0, float v1, float v2, float v3)
+{
+	glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
+}

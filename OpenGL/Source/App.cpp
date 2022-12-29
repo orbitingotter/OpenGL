@@ -159,7 +159,7 @@ int main()
 		float g = sin(glfwGetTime() * 0.1f);
 		float b = sin(glfwGetTime() * 0.5f);
 
-		//glUniform4f(location, r, g, b, 1.0f);
+		shader.SetUniform("uColor", r, g, b, 1.0f);
 
 		glDrawElements(GL_TRIANGLES, ibo.GetCount(), GL_UNSIGNED_INT, nullptr);
 
