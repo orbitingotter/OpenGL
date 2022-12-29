@@ -1,8 +1,10 @@
 #pragma once
+
 #include <GL/glew.h>
 
 class IndexBuffer
 {
+public:
 	IndexBuffer(const unsigned int* data, unsigned int count);
 	~IndexBuffer();
 
@@ -12,7 +14,7 @@ class IndexBuffer
 	unsigned int GetCount() const;
 
 private:
-	unsigned int mBufferID;
+	unsigned int mID;
 	unsigned int mCount;
 };
 
