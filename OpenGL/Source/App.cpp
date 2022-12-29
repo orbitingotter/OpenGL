@@ -8,6 +8,7 @@
 #include "Graphics/VertexBuffer.h"
 #include "Graphics/IndexBuffer.h"
 #include "Graphics/VertexArray.h"
+#include "Graphics/Shader.h"
 
 
 void APIENTRY MessageCallback(GLenum source,
@@ -73,94 +74,6 @@ void APIENTRY MessageCallback(GLenum source,
 #ifdef _DEBUG
 	__debugbreak();
 #endif
-}
-
-struct ShaderSource
-{
-	std::string vs;
-	std::string ps;
-};
-
-ShaderSource ParseShader(const std::string& filePath)
-{
-	enum class ShaderType
-	{
-		Invalid = -1, Vertex, Pixel
-	};
-
-	std::ifstream file;
-	file.open(filePath);
-	if (!file.is_open())
-	{
-		std::cout << "ERROR : File ( " << filePath << " ) could not be opened\n";
-		return {};
-	}
-
-	std::string line;
-	ShaderType mode = ShaderType::Invalid;
-	std::string sources[2];
-	while (getline(file, line))
-	{
-		if (line.find("#shader") != std::string::npos)
-		{
-			if (line.find("vertex") != std::string::npos)
-				mode = ShaderType::Vertex;
-			else if (line.find("pixel") != std::string::npos)
-				mode = ShaderType::Pixel;
-			else
-				mode = ShaderType::Invalid;
-		}
-		else
-		{
-			line += '\n';
-			sources[(int)mode] += line;
-		}
-	}
-
-	file.close();
-	return { sources[(int)ShaderType::Vertex], sources[(int)ShaderType::Pixel] };
-}
-
-unsigned int CompileShader(const std::string& shader, unsigned int type)
-{
-	unsigned int shaderID = glCreateShader(type);
-	const char* source = shader.c_str();
-	glShaderSource(shaderID, 1, &source, nullptr);
-	glCompileShader(shaderID);
-
-	// Error Handling
-	int result;
-	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
-	if (result == GL_FALSE)
-	{
-		int length;
-		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &length);
-		char* message = new char[length];
-		glGetShaderInfoLog(shaderID, length, &length, message);
-
-		std::cout << "ERROR : Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "pixel") << "shader.\n";
-		std::cout << message << std::endl;
-		return 0;
-	}
-
-	return shaderID;
-}
-
-unsigned int CreateProgram(const std::string& vertexShader, const std::string& pixelShader)
-{
-	unsigned int program = glCreateProgram();
-	unsigned int vs = CompileShader(vertexShader, GL_VERTEX_SHADER);
-	unsigned int ps = CompileShader(pixelShader, GL_FRAGMENT_SHADER);
-
-	glAttachShader(program, vs);
-	glAttachShader(program, ps);
-	glLinkProgram(program);
-	glValidateProgram(program);
-
-	glDeleteShader(vs);
-	glDeleteShader(ps);
-
-	return program;
 }
 
 int main()
@@ -230,11 +143,7 @@ int main()
 
 	vao.AddBuffer(vbo, ibo, layout);
 
-	ShaderSource shader = ParseShader("Source/Shaders/Basic.glsl");
-	unsigned int program = CreateProgram(shader.vs, shader.ps);
-	glUseProgram(program);
-
-	int location = glGetUniformLocation(program, "uColor");
+	Shader shader("Source/Shaders/Basic.glsl");
 
 
 	/* Loop until the user closes the window */
@@ -250,7 +159,7 @@ int main()
 		float g = sin(glfwGetTime() * 0.1f);
 		float b = sin(glfwGetTime() * 0.5f);
 
-		glUniform4f(location, r, g, b, 1.0f);
+		//glUniform4f(location, r, g, b, 1.0f);
 
 		glDrawElements(GL_TRIANGLES, ibo.GetCount(), GL_UNSIGNED_INT, nullptr);
 
@@ -277,7 +186,6 @@ int main()
 		glfwPollEvents();
 	}
 
-	glDeleteProgram(program);
 
 	glfwTerminate();
 
