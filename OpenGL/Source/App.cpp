@@ -9,6 +9,7 @@
 #include "Graphics/IndexBuffer.h"
 #include "Graphics/VertexArray.h"
 #include "Graphics/Shader.h"
+#include "Graphics/Renderer.h"
 
 
 void APIENTRY MessageCallback(GLenum source,
@@ -120,7 +121,7 @@ int main()
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
 
 
-	float positions[] =
+	float positions[2 * 4] =
 	{
 		-0.5f, -0.5f,
 		-0.5f, 0.5f,
@@ -135,15 +136,15 @@ int main()
 	};
 
 	VertexArray vao;
-
-	VertexBuffer vbo(positions, 8 * sizeof(float));
+	VertexBuffer vbo(positions, 2 * 4 * sizeof(float));
 	IndexBuffer ibo(indices, 6);
 	BufferLayout layout;
 	layout.Push<float>(2);
-
 	vao.AddBuffer(vbo, ibo, layout);
 
 	Shader shader("Source/Shaders/Basic.glsl");
+	Renderer renderer;
+
 
 
 	/* Loop until the user closes the window */
@@ -152,8 +153,7 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+		renderer.Clear(0.1f, 0.1f, 0.1f, 0.0f);
 
 		float r = sin(glfwGetTime() * 0.2f);
 		float g = sin(glfwGetTime() * 0.1f);
@@ -161,7 +161,7 @@ int main()
 
 		shader.SetUniform("uColor", r, g, b, 1.0f);
 
-		glDrawElements(GL_TRIANGLES, ibo.GetCount(), GL_UNSIGNED_INT, nullptr);
+		renderer.Draw(vao, ibo.GetCount(), shader);
 
 		if (glfwGetKey(window, GLFW_KEY_ENTER))
 		{
