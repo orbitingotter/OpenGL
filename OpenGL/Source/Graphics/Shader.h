@@ -18,6 +18,7 @@ private:
 	int GetUniformLocation(const std::string& name);
 public:
 	void SetUniform(const std::string& name, float v0, float v1, float v2, float v3);
+	void SetUniform(const std::string& name, int value);
 
 private:
 	struct ShaderSource

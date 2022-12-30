@@ -9,6 +9,7 @@
 #include "Graphics/IndexBuffer.h"
 #include "Graphics/VertexArray.h"
 #include "Graphics/Shader.h"
+#include "Graphics/Texture.h"
 #include "Graphics/Renderer.h"
 
 
@@ -120,13 +121,16 @@ int main()
 	glDebugMessageCallback(MessageCallback, 0);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	float positions[2 * 4] =
+
+	float positions[] =
 	{
-		-0.5f, -0.5f,
-		-0.5f, 0.5f,
-		0.5f, 0.5f,
-		0.5f , -0.5f
+		-0.5f, -0.5f, 0.0f, 0.0f,
+		-0.5f, 0.5f,  0.0f, 1.0f,
+		0.5f, 0.5f,   1.0f, 1.0f,
+		0.5f , -0.5f,  1.0f, 0.0f
 	};
 
 	unsigned int indices[] =
@@ -136,15 +140,23 @@ int main()
 	};
 
 	VertexArray vao;
-	VertexBuffer vbo(positions, 2 * 4 * sizeof(float));
+	VertexBuffer vbo(positions, 4 * 4 * sizeof(float));
 	IndexBuffer ibo(indices, 6);
 	BufferLayout layout;
 	layout.Push<float>(2);
+	layout.Push<float>(2);
+
 	vao.AddBuffer(vbo, ibo, layout);
 
-	Shader shader("Source/Shaders/Basic.glsl");
-	Renderer renderer;
+	Shader shader("Source/Shaders/Texture.glsl");
 
+	Texture texture("Resources/homer.png");
+	texture.Bind();
+
+	shader.Bind();
+	shader.SetUniform("uTexture", 0);
+
+	Renderer renderer;
 
 
 	/* Loop until the user closes the window */
@@ -160,6 +172,7 @@ int main()
 		float b = sin(glfwGetTime() * 0.5f);
 
 		shader.SetUniform("uColor", r, g, b, 1.0f);
+
 
 		renderer.Draw(vao, ibo.GetCount(), shader);
 
