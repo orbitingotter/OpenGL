@@ -12,6 +12,9 @@
 #include "Graphics/Texture.h"
 #include "Graphics/Renderer.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 
 void APIENTRY MessageCallback(GLenum source,
 	GLenum type,
@@ -124,6 +127,8 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	glEnable(GL_DEPTH_TEST);
+
 
 	float positions[] =
 	{
@@ -148,15 +153,57 @@ int main()
 
 	vao.AddBuffer(vbo, ibo, layout);
 
-	Shader shader("Source/Shaders/Texture.glsl");
+	Shader shader("Source/Shaders/Basic.glsl");
 
-	Texture texture("Resources/homer.png");
+	Texture texture("Resources/ghibli.png");
 	texture.Bind();
 
 	shader.Bind();
 	shader.SetUniform("uTexture", 0);
 
 	Renderer renderer;
+
+	glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
+	glm::mat4 projection = glm::ortho(-1.33f, 1.33f, -1.0f, 1.0f, -1.0f, 1.0f);
+	projection = glm::perspective(glm::radians(45.0f), 1.33f, 0.1f, 100.0f);
+
+	shader.SetUniform("uMVP", projection * view * model);
+
+
+
+	float cubePos[] =
+	{
+		-0.5f, -0.5f, -0.5f,	0.4f, 0.8f, 0.1f,
+		-0.5f, -0.5f, +0.5f,	0.8f, 0.6f, 0.1f,
+		-0.5f, +0.5f, -0.5f,	0.2f, 0.6f, 0.8f,
+		-0.5f, +0.5f, +0.5f,	0.5f, 0.6f, 0.2f,
+		+0.5f, -0.5f, -0.5f,	0.2f, 0.8f, 0.1f,
+		+0.5f, -0.5f, +0.5f,	0.8f, 0.6f, 0.1f,
+		+0.5f, +0.5f, -0.5f,	0.2f, 0.6f, 0.5f,
+		+0.5f, +0.5f, +0.5f,	0.9f, 0.1f, 0.7f,
+	};
+
+	unsigned int cubeIndices[] =
+	{
+		0,1,2,	1,2,3,
+		4,5,6,	5,6,7,
+		0,6,2,	0,4,6,
+		1,7,3,  1,5,7,
+		2,6,7,	2,3,7,
+		0,4,5,	0,1,5
+	};
+
+	VertexArray cubeVAO;
+	VertexBuffer cubeVBO(cubePos, 6 * 8 * sizeof(float));
+	IndexBuffer cubeIBO(cubeIndices, 36);
+	BufferLayout cubeLayout;
+	cubeLayout.Push<float>(3);
+	cubeLayout.Push<float>(3);
+
+	cubeVAO.AddBuffer(cubeVBO, cubeIBO, cubeLayout);
+
+
 
 
 	/* Loop until the user closes the window */
@@ -171,10 +218,13 @@ int main()
 		float g = sin(glfwGetTime() * 0.1f);
 		float b = sin(glfwGetTime() * 0.5f);
 
+		model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(1, 1, 1));
 		shader.SetUniform("uColor", r, g, b, 1.0f);
+		shader.SetUniform("uMVP", projection * view * model);
 
+		renderer.Draw(cubeVAO, cubeIBO.GetCount(), shader);
+		//renderer.Draw(vao, ibo.GetCount(), shader);
 
-		renderer.Draw(vao, ibo.GetCount(), shader);
 
 		if (glfwGetKey(window, GLFW_KEY_ENTER))
 		{

@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 #include <iostream>
-#include "Vendor/stb_image/stb_image.h"
+#include "stb_image/stb_image.h"
 
 Texture::Texture(const std::string& filePath)
 	: mID(0), mFilePath(filePath), mImageBuffer(nullptr), mWidth(0), mHeight(0), mChannels(0)
