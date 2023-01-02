@@ -8,6 +8,7 @@
 class Renderer
 {
 public:
+	Renderer();
 
 	void Clear(float r, float g, float b, float a) const;
 public:

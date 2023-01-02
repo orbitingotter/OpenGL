@@ -175,6 +175,7 @@
     <ClCompile Include="Source\Graphics\VertexBuffer.cpp" />
     <ClCompile Include="Source\Vendor\glm\detail\glm.cpp" />
     <ClCompile Include="Source\Vendor\stb_image\stb_image.cpp" />
+    <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shaders\Basic.glsl" />
@@ -607,6 +608,7 @@
     <ClInclude Include="Source\Vendor\glm\vec4.hpp" />
     <ClInclude Include="Source\Vendor\glm\vector_relational.hpp" />
     <ClInclude Include="Source\Vendor\stb_image\stb_image.h" />
+    <ClInclude Include="Source\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
