@@ -16,6 +16,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 
 
 int main()
@@ -23,6 +27,17 @@ int main()
 
 	Window window("OpenGL App", 960, 720);
 	Renderer renderer;
+
+	// imgui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+
+
+	ImGui_ImplGlfw_InitForOpenGL(window.Get(), true);
+	ImGui_ImplOpenGL3_Init("#version 330");
+
 
 	float positions[] =
 	{
@@ -59,9 +74,9 @@ int main()
 	glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
 	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
 	glm::mat4 projection = glm::ortho(-1.33f, 1.33f, -1.0f, 1.0f, -1.0f, 10.0f);
-	projection = glm::perspective(glm::radians(45.0f), 1.33f, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(60.0f), 1.33f, 0.1f, 100.0f);
 
-	view = glm::lookAt(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	view = glm::lookAt(glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	shader.SetUniform("uMVP", projection * view * model);
 
@@ -99,6 +114,7 @@ int main()
 	cubeVAO.AddBuffer(cubeVBO, cubeIBO, cubeLayout);
 
 
+	bool showDemo = true;
 
 	float prev = glfwGetTime();
 	int frames = 0;
@@ -114,13 +130,13 @@ int main()
 		float radius = 5.0f;
 		view = glm::lookAt(glm::vec3(sin(glfwGetTime()) * radius, 0.0f, cos(glfwGetTime()) * radius), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-		//model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime() * 1.0f, glm::vec3(1, 0, 0));
 
 		shader.SetUniform("uColor", r, g, b, 1.0f);
 		shader.SetUniform("uMVP", projection * view * model);
 
-		renderer.Draw(cubeVAO, cubeIBO.GetCount(), shader);
 		//renderer.Draw(vao, ibo.GetCount(), shader);
+
+		renderer.Draw(cubeVAO, cubeIBO.GetCount(), shader);
 
 
 		if (glfwGetKey(window.Get(), GLFW_KEY_ENTER))
@@ -138,9 +154,27 @@ int main()
 		}
 		frames++;
 
+
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		if (showDemo)
+			ImGui::ShowDemoWindow(&showDemo);
+
+
+		// render
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		window.OnUpdate();
 	}
 
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 
 	return 0;
