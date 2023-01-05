@@ -1,5 +1,8 @@
-## OpenGL Ignores
-/OpenGL/imgui.ini
+## Custom Ignores
+
+OpenGL/imgui.ini
+
+
 
 ## Visual Studio Ignores
 
