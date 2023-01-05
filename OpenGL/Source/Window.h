@@ -7,7 +7,7 @@
 class Window
 {
 public:
-	Window(const std::string& title, int width, int height);
+	Window(const std::string& title, int width, int height, bool vSync = true, bool fullScreen = false);
 	~Window();
 
 	bool IsRunning() const;
@@ -15,7 +15,8 @@ public:
 
 
 	// getters and setters
-	void SetVSync(bool vsync) const;
+	bool IsVSync() const;
+	void SetVSync(bool vsync);
 
 	const std::string& GetTitle() const;
 	void SetTitle(const std::string& title);
@@ -23,6 +24,7 @@ public:
 	void SetSize(int x, int y);
 	int GetWidth() const;
 	int GetHeight() const;
+	float GetAspectRatio() const;
 
 	GLFWwindow* Get() const;
 
@@ -31,4 +33,5 @@ private:
 	std::string mTitle;
 	int mWidth, mHeight;
 	GLFWwindow* mWindow;
+	bool mVSync;
 };

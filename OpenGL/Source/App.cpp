@@ -15,28 +15,18 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
 
-
 int main()
 {
 
-	Window window("OpenGL App", 960, 720);
+	Window window("OpenGL App", 1600, 900);
 	Renderer renderer;
-
-	// imgui
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	ImGui::StyleColorsDark();
-
-
-	ImGui_ImplGlfw_InitForOpenGL(window.Get(), true);
-	ImGui_ImplOpenGL3_Init("#version 330");
 
 
 	float positions[] =
@@ -74,13 +64,11 @@ int main()
 	glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
 	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
 	glm::mat4 projection = glm::ortho(-1.33f, 1.33f, -1.0f, 1.0f, -1.0f, 10.0f);
-	projection = glm::perspective(glm::radians(60.0f), 1.33f, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(60.0f), window.GetAspectRatio(), 0.1f, 100.0f);
 
 	view = glm::lookAt(glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	shader.SetUniform("uMVP", projection * view * model);
-
-
 
 	float cubePos[] =
 	{
@@ -96,12 +84,12 @@ int main()
 
 	unsigned int cubeIndices[] =
 	{
-		0,1,2,	1,2,3,
-		4,5,6,	5,6,7,
-		0,6,2,	0,4,6,
-		1,7,3,  1,5,7,
-		2,6,7,	2,3,7,
-		0,4,5,	0,1,5
+		1,2,0,	2,1,3,
+		4,7,5,	7,4,6,
+		0,6,4,	6,0,2,
+		5,3,1,  3,5,7,
+		2,7,6,	7,2,3,
+		1,4,5,	1,0,4
 	};
 
 	VertexArray cubeVAO;
@@ -118,6 +106,9 @@ int main()
 
 	float prev = glfwGetTime();
 	int frames = 0;
+	float radius = 5.0f;
+	float roll = 0.0f, pitch = 0.0f, yaw = 0.0f;
+
 	while (window.IsRunning())
 	{
 		/* Render here */
@@ -127,9 +118,8 @@ int main()
 		float g = sin(glfwGetTime() * 0.1f);
 		float b = sin(glfwGetTime() * 0.5f);
 
-		float radius = 5.0f;
+		model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(1, 1, 1));
 		view = glm::lookAt(glm::vec3(sin(glfwGetTime()) * radius, 0.0f, cos(glfwGetTime()) * radius), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
 
 		shader.SetUniform("uColor", r, g, b, 1.0f);
 		shader.SetUniform("uMVP", projection * view * model);
@@ -163,6 +153,26 @@ int main()
 		if (showDemo)
 			ImGui::ShowDemoWindow(&showDemo);
 
+		static bool testWindow = true;
+		if (testWindow)
+		{
+			ImGui::Begin("View Matrix", &testWindow);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+			ImGui::SliderFloat("Radius", &radius, -20.0f, 20.0f);
+			ImGui::Text("FPS : %.1f FPS | Delta : %.2f ms", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+
+			if (ImGui::Button("VSync"))
+			{
+				if (window.IsVSync())
+					window.SetVSync(false);
+				else
+					window.SetVSync(true);
+			}
+
+			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -radius));
+
+
+			ImGui::End();
+		}
 
 		// render
 		ImGui::Render();
@@ -170,11 +180,6 @@ int main()
 
 		window.OnUpdate();
 	}
-
-	// Cleanup
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
 
 
 	return 0;

@@ -82,8 +82,12 @@ Renderer::Renderer()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Enbales depth test
+	// Enables depth test
 	glEnable(GL_DEPTH_TEST);
+
+	// Enables back culling
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 }
 
 void Renderer::Clear(float r, float g, float b, float a) const
