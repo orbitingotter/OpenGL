@@ -1,8 +1,16 @@
 #pragma once
 
-#include "Test.h"
+#include "Sandbox.h"
 
-class CubeTest : public Test
+#include "Window.h"
+#include "Graphics/VertexArray.h"
+#include "Graphics/Shader.h"
+#include "Graphics/Renderer.h"
+
+#include <vector>
+#include <memory>
+
+class CubeTest : public Sandbox
 {
 public:
 	CubeTest();
@@ -13,4 +21,15 @@ public:
 	void OnImGuiRender() override;
 
 private:
+	std::unique_ptr<VertexArray> mVAO;
+	std::unique_ptr<VertexBuffer> mVBO;
+	std::unique_ptr<IndexBuffer> mIBO;
+	std::unique_ptr<Shader> mShader;
+
+	std::vector<float> mVertex;
+	std::vector<unsigned int> mIndices;
+
+	glm::mat4 mModel;
+	glm::mat4 mView;
+	glm::mat4 mProj;
 };

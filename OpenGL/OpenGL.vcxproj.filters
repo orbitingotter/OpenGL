@@ -481,6 +481,8 @@
     <None Include="Source\Vendor\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="Source\Shaders\Phong.glsl" />
+    <None Include="Source\Shaders\SolidBasic.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Graphics\VertexBuffer.h">
@@ -1383,10 +1385,13 @@
     <ClInclude Include="Source\Vendor\imgui\imgui_impl_opengl3_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Tests\Test.h">
+    <ClInclude Include="Source\Sandbox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Tests\CubeTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tests\PhongTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
