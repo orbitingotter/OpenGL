@@ -83,7 +83,13 @@ public:
 		IM_ASSERT(font != NULL);
 		SetDarkThemeImGui();
 	}
-	virtual ~Sandbox() {}
+	virtual ~Sandbox()
+	{
+		// imgui shutdown
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+	}
 
 	void Run()
 	{

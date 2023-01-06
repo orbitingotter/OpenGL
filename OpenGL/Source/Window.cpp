@@ -39,12 +39,6 @@ Window::Window(const std::string& title, int width, int height, bool vSync, bool
 
 Window::~Window()
 {
-	// imgui shutdown
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-
-
 	glfwTerminate();
 }
 
