@@ -17,6 +17,7 @@ public:
 	bool IsActive();
 
 	inline glm::mat4 GetViewMatrix() { return glm::lookAt(mPos, mPos + mFront, mUpDir); }
+	inline const glm::vec3& GetPosition() { return mPos; }
 private:
 	glm::vec3 mPos;			// position of camera
 	glm::vec3 mFront;		// target of camera relative to position
@@ -30,4 +31,4 @@ private:
 	float mYaw, mRoll, mPitch;
 
 	bool mActivated;
- };
+};

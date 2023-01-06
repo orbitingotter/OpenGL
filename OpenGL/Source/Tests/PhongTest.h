@@ -10,6 +10,12 @@
 #include <vector>
 #include <memory>
 
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+
 class PhongTest : public Sandbox
 {
 public:
@@ -64,6 +70,38 @@ public:
 		{
 			mIndices.push_back(i);
 		}
+
+		/*
+		//______________
+
+		Assimp::Importer imp;
+		const aiScene* model = imp.ReadFile("Resources/standford-bunny.stl", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+
+		const auto pMesh = model->mMeshes[0];
+		const float scale = 0.02f;
+
+		mIndices.reserve(pMesh->mNumVertices * 6);
+		for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
+		{
+			mVertex.emplace_back(scale * pMesh->mVertices[i].x);
+			mVertex.emplace_back(scale * pMesh->mVertices[i].y);
+			mVertex.emplace_back(scale * pMesh->mVertices[i].z);
+			mVertex.emplace_back(pMesh->mNormals[i].x);
+			mVertex.emplace_back(pMesh->mNormals[i].y);
+			mVertex.emplace_back(pMesh->mNormals[i].z);
+		}
+		mIndices.reserve(pMesh->mNumFaces * 3);
+		for (unsigned int i = 0; i < pMesh->mNumFaces; i++)
+		{
+			const auto& pFace = pMesh->mFaces[i];
+			mIndices.emplace_back(pFace.mIndices[0]);
+			mIndices.emplace_back(pFace.mIndices[1]);
+			mIndices.emplace_back(pFace.mIndices[2]);
+
+		}
+		std::cout << mVertex.size() << " " << mIndices.size() << std::endl;
+		//______________
+		*/
 
 		mVAO = std::make_unique<VertexArray>();
 		mVBO = std::make_unique<VertexBuffer>(mVertex.data(), mVertex.size() * sizeof(float));
@@ -127,7 +165,7 @@ public:
 		mShader->SetUniform("uView", mView);
 		mShader->SetUniform("uProj", mProj);
 		mShader->SetUniform("uLightPos", mLightPos);
-
+		mShader->SetUniform("uCameraPos", camera.GetPosition());
 
 		lightShader->Bind();
 		lightShader->SetUniform("uModel", mLightModel);
