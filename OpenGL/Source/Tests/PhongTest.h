@@ -75,7 +75,7 @@ public:
 		mShader = std::make_unique<Shader>("Source/Shaders/Phong.glsl");
 
 		mModel = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
-		mView = glm::lookAt(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		mView = camera.GetViewMatrix();
 		mProj = glm::perspective(glm::radians(60.0f), window.GetAspectRatio(), 0.1f, 100.0f);
 
 
@@ -111,7 +111,6 @@ public:
 		lightLayout.Push<float>(3);
 		lightVAO->AddBuffer(*lightVBO, *lightIBO, lightLayout);
 		lightShader = std::make_unique<Shader>("Source/Shaders/SolidBasic.glsl");
-
 	}
 
 	~PhongTest() {}
@@ -121,6 +120,7 @@ public:
 		mModel = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(1, 1, 1));
 		mLightModel = glm::translate(glm::mat4(1.0f), mLightPos);
 		mLightModel = glm::scale(mLightModel, glm::vec3(0.2));
+		mView = camera.GetViewMatrix();
 
 		mShader->Bind();
 		mShader->SetUniform("uModel", mModel);
@@ -133,7 +133,6 @@ public:
 		lightShader->SetUniform("uModel", mLightModel);
 		lightShader->SetUniform("uView", mView);
 		lightShader->SetUniform("uProj", mProj);
-
 
 		if (window.IsKeyPressed(GLFW_KEY_ENTER))
 		{

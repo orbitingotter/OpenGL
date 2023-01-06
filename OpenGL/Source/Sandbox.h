@@ -2,7 +2,7 @@
 
 #include "Window.h"
 #include "Graphics/Renderer.h"
-
+#include "Graphics/Camera.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -68,7 +68,7 @@ static void SetDarkThemeImGui()
 class Sandbox
 {
 public:
-	Sandbox() : window("OpenGL App", 1600, 900), renderer(), fps(0), delta(0)
+	Sandbox() : window("OpenGL App", 1600, 900), renderer(), delta(0.0f)
 	{
 		// imgui initialization
 		IMGUI_CHECKVERSION();
@@ -95,13 +95,14 @@ public:
 	{
 		while (window.IsRunning())
 		{
-			fps = ImGui::GetIO().Framerate;
-			delta = 1 / fps;
+			delta = 1 / ImGui::GetIO().Framerate;
 
 			OnUpdate();
+			camera.OnUpdate(window, delta);
+
 			OnRender();
 
-			// ImGUI -> new frame - function - render
+			// ImGUI
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
@@ -110,8 +111,6 @@ public:
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
 
 			window.OnUpdate();
 		}
@@ -124,6 +123,7 @@ public:
 protected:
 	Window window;
 	Renderer renderer;
-	float fps;
+	Camera camera;
+
 	float delta;
 };
