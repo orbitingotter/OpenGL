@@ -13,6 +13,7 @@ public:
 	bool IsRunning() const;
 	void Close() const;
 
+	void OnUpdate() const;
 
 	// getters and setters
 	bool IsVSync() const;
@@ -28,7 +29,10 @@ public:
 
 	GLFWwindow* Get() const;
 
-	void OnUpdate() const;
+	// input polling
+	bool IsKeyPressed(int keycode);
+	bool IsMousePressed(int keycode);
+
 private:
 	std::string mTitle;
 	int mWidth, mHeight;

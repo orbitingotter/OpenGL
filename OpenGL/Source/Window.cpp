@@ -107,6 +107,16 @@ GLFWwindow* Window::Get() const
 	return mWindow;
 }
 
+bool Window::IsKeyPressed(int keycode)
+{
+	return glfwGetKey(mWindow, keycode) == GLFW_PRESS;
+}
+
+bool Window::IsMousePressed(int keycode)
+{
+	return glfwGetMouseButton(mWindow, keycode) == GLFW_PRESS;
+}
+
 void Window::OnUpdate() const
 {
 	glfwSwapBuffers(mWindow);

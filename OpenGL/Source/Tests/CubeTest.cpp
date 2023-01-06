@@ -64,7 +64,7 @@ void CubeTest::OnUpdate()
 	mShader->SetUniform("uColor", r, g, b, 1.0f);
 	mShader->SetUniform("uMVP", mProj * mView * mModel);
 
-	if (glfwGetKey(window.Get(), GLFW_KEY_ENTER))
+	if (window.IsKeyPressed(GLFW_KEY_ENTER))
 	{
 		window.Close();
 	}

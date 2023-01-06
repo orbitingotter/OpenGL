@@ -135,7 +135,7 @@ public:
 		lightShader->SetUniform("uProj", mProj);
 
 
-		if (glfwGetKey(window.Get(), GLFW_KEY_ENTER))
+		if (window.IsKeyPressed(GLFW_KEY_ENTER))
 		{
 			window.Close();
 		}
