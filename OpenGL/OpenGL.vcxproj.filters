@@ -486,6 +486,7 @@
     </None>
     <None Include="Source\Shaders\Phong.glsl" />
     <None Include="Source\Shaders\SolidBasic.glsl" />
+    <None Include="Source\Shaders\LightingMap.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Graphics\VertexBuffer.h">
@@ -1398,6 +1399,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tests\LightingMapsTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

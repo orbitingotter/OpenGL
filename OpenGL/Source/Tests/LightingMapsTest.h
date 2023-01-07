@@ -5,65 +5,59 @@
 #include "Window.h"
 #include "Graphics/VertexArray.h"
 #include "Graphics/Shader.h"
-#include "Graphics/Renderer.h"
+#include "Graphics/Texture.h"
 
 #include <vector>
 #include <memory>
 
-
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
-
-class PhongTest : public Sandbox
+class LightingMapTest : public Sandbox
 {
 public:
-	PhongTest()
+	LightingMapTest()
 	{
 		mVertex =
 		{
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+			 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+			 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+			 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+			 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+			 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+			 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+			 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+			 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+			 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
 		};
 
 		for (int i = 0; i < 36; i++)
@@ -71,37 +65,6 @@ public:
 			mIndices.push_back(i);
 		}
 
-		/*
-		//______________
-
-		Assimp::Importer imp;
-		const aiScene* model = imp.ReadFile("Resources/standford-bunny.stl", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
-
-		const auto pMesh = model->mMeshes[0];
-		const float scale = 0.02f;
-
-		mIndices.reserve(pMesh->mNumVertices * 6);
-		for (unsigned int i = 0; i < pMesh->mNumVertices; i++)
-		{
-			mVertex.emplace_back(scale * pMesh->mVertices[i].x);
-			mVertex.emplace_back(scale * pMesh->mVertices[i].y);
-			mVertex.emplace_back(scale * pMesh->mVertices[i].z);
-			mVertex.emplace_back(pMesh->mNormals[i].x);
-			mVertex.emplace_back(pMesh->mNormals[i].y);
-			mVertex.emplace_back(pMesh->mNormals[i].z);
-		}
-		mIndices.reserve(pMesh->mNumFaces * 3);
-		for (unsigned int i = 0; i < pMesh->mNumFaces; i++)
-		{
-			const auto& pFace = pMesh->mFaces[i];
-			mIndices.emplace_back(pFace.mIndices[0]);
-			mIndices.emplace_back(pFace.mIndices[1]);
-			mIndices.emplace_back(pFace.mIndices[2]);
-
-		}
-		std::cout << mVertex.size() << " " << mIndices.size() << std::endl;
-		//______________
-		*/
 
 		mVAO = std::make_unique<VertexArray>();
 		mVBO = std::make_unique<VertexBuffer>(mVertex.data(), mVertex.size() * sizeof(float));
@@ -109,8 +72,13 @@ public:
 		BufferLayout layout;
 		layout.Push<float>(3);
 		layout.Push<float>(3);
+		layout.Push<float>(2);
 		mVAO->AddBuffer(*mVBO, *mIBO, layout);
-		mShader = std::make_unique<Shader>("Source/Shaders/Phong.glsl");
+		mShader = std::make_unique<Shader>("Source/Shaders/LightingMap.glsl");
+		mDiffuseTexture = std::make_unique<Texture>("Resources/container-diffuse.png");
+		mSpecularTexture = std::make_unique<Texture>("Resources/container-specular.png");
+		mEmissiveTexture = std::make_unique<Texture>("Resources/container-emissive2.png");
+
 
 		mModel = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
 		mView = camera.GetViewMatrix();
@@ -151,7 +119,7 @@ public:
 		lightShader = std::make_unique<Shader>("Source/Shaders/SolidBasic.glsl");
 	}
 
-	~PhongTest() {}
+	~LightingMapTest() {}
 
 	void OnUpdate() override
 	{
@@ -166,6 +134,12 @@ public:
 		mShader->SetUniform("uProj", mProj);
 		mShader->SetUniform("uLightPos", mLightPos);
 		mShader->SetUniform("uCameraPos", camera.GetPosition());
+		mDiffuseTexture->Bind(0);
+		mShader->SetUniform("uDiffuseTex", 0);
+		mSpecularTexture->Bind(1);
+		mShader->SetUniform("uSpecularTex", 1);
+		//mEmissiveTexture->Bind(2);
+		//mShader->SetUniform("uEmissiveTex", 2);
 
 		lightShader->Bind();
 		lightShader->SetUniform("uModel", mLightModel);
@@ -218,6 +192,9 @@ private:
 	std::unique_ptr<VertexBuffer> mVBO;
 	std::unique_ptr<IndexBuffer> mIBO;
 	std::unique_ptr<Shader> mShader;
+	std::unique_ptr<Texture> mDiffuseTexture;
+	std::unique_ptr<Texture> mSpecularTexture;
+	std::unique_ptr<Texture> mEmissiveTexture;
 
 	std::vector<float> mVertex;
 	std::vector<unsigned int> mIndices;
