@@ -4,11 +4,11 @@
 // test scenes
 #include "Tests/CubeTest.h"
 #include "Tests/PhongTest.h"
-#include "Tests/LightingMapsTest.h"
+#include "Tests/LightingMapTest.h"
 
 int main()
 {
-	Sandbox* scene = new LightingMapTest();
+	Sandbox* scene = new PhongTest();
 
 	scene->Run();
 

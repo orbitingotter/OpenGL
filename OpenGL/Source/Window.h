@@ -41,7 +41,7 @@ private:
 	int mWidth, mHeight;
 	GLFWwindow* mWindow;
 	bool mVSync;
-	double mPosX, mPosY;
+	int mPosX, mPosY;
 
 
 	float mMouseX, mMouseY;				// current mouse position

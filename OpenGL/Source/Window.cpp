@@ -43,20 +43,20 @@ Window::Window(const std::string& title, int width, int height, bool vSync, bool
 	glfwSetCursorPosCallback(mWindow, [](GLFWwindow* glfwWindow, double xpos, double ypos)
 		{
 			Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-			window->mMouseX = xpos;
-			window->mMouseY = ypos;
+			window->mMouseX = (float)xpos;
+			window->mMouseY = (float)ypos;
 
 			if (window->mFirstMouse)
 			{
-				window->mLastMouseX = xpos;
-				window->mLastMouseY = ypos;
+				window->mLastMouseX = (float)xpos;
+				window->mLastMouseY = (float)ypos;
 				window->mFirstMouse = false;
 			}
 			window->mDeltaMouseX = window->mMouseX -  window->mLastMouseX;
 			window->mDeltaMouseY = -window->mMouseY + window->mLastMouseY;
 
-			window->mLastMouseX = xpos;
-			window->mLastMouseY = ypos;
+			window->mLastMouseX = (float)xpos;
+			window->mLastMouseY = (float)ypos;
 		});
 
 	glfwSetWindowSizeCallback(mWindow, [](GLFWwindow* glfwWindow, int width, int height)

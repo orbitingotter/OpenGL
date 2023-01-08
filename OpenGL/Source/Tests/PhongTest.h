@@ -20,7 +20,7 @@ class PhongTest : public Sandbox
 {
 public:
 	PhongTest()
-	{
+	{/*
 		mVertex =
 		{
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -69,9 +69,9 @@ public:
 		for (int i = 0; i < 36; i++)
 		{
 			mIndices.push_back(i);
-		}
+		}*/
 
-		/*
+
 		//______________
 
 		Assimp::Importer imp;
@@ -101,7 +101,7 @@ public:
 		}
 		std::cout << mVertex.size() << " " << mIndices.size() << std::endl;
 		//______________
-		*/
+
 
 		mVAO = std::make_unique<VertexArray>();
 		mVBO = std::make_unique<VertexBuffer>(mVertex.data(), mVertex.size() * sizeof(float));
