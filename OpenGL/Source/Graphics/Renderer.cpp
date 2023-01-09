@@ -1,6 +1,6 @@
+#include "pch.h"
 #include "Renderer.h"
 
-#include <iostream>
 
 #include <GLFW/glfw3.h>
 

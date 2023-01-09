@@ -2,9 +2,6 @@
 
 #include <GL/glew.h>
 
-#include <vector>
-#include <iostream>
-
 
 class BufferLayout
 {

@@ -7,13 +7,12 @@
 #include "Graphics/Shader.h"
 #include "Graphics/Renderer.h"
 
-#include <vector>
-#include <memory>
-
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+
+
 
 
 class PhongTest : public Sandbox
@@ -155,7 +154,7 @@ public:
 
 	void OnUpdate() override
 	{
-		mModel = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(1, 1, 1));
+		//mModel = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(1, 1, 1));
 		mLightModel = glm::translate(glm::mat4(1.0f), mLightPos);
 		mLightModel = glm::scale(mLightModel, glm::vec3(0.2f));
 		mView = camera.GetViewMatrix();

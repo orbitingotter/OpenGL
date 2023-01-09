@@ -7,8 +7,6 @@
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
-#include <vector>
-#include <memory>
 
 class LightingMapTest : public Sandbox
 {

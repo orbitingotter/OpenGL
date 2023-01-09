@@ -7,8 +7,6 @@
 #include "Graphics/Shader.h"
 #include "Graphics/Renderer.h"
 
-#include <vector>
-#include <memory>
 
 class CubeTest : public Sandbox
 {

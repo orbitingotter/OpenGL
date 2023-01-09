@@ -1,9 +1,5 @@
+#include "pch.h"
 #include "Shader.h"
-
-#include <iostream>
-#include <fstream>
-#include <string>
-
 
 Shader::Shader(const std::string& filePath)
 	: mFilePath(filePath), mID(0)

@@ -1,6 +1,6 @@
+#include "pch.h"
 #include "Window.h"
 
-#include <iostream>
 
 Window::Window(const std::string& title, int width, int height, bool vSync, bool fullScreen)
 	: mTitle(title), mWidth(width), mHeight(height), mVSync(vSync),
@@ -14,7 +14,7 @@ Window::Window(const std::string& title, int width, int height, bool vSync, bool
 	}
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	mWindow = glfwCreateWindow(width, height, title.c_str(), fullScreen ? glfwGetPrimaryMonitor() : NULL, NULL);
