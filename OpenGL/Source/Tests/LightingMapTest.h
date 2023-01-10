@@ -5,7 +5,7 @@
 #include "Window.h"
 #include "Graphics/VertexArray.h"
 #include "Graphics/Shader.h"
-#include "Graphics/Texture.h"
+#include "Graphics/Texture2D.h"
 
 
 class LightingMapTest : public Sandbox
@@ -73,10 +73,9 @@ public:
 		layout.Push<float>(2);
 		mVAO->AddBuffer(*mVBO, *mIBO, layout);
 		mShader = std::make_unique<Shader>("Source/Shaders/LightingMap.glsl");
-		mDiffuseTexture = std::make_unique<Texture>("Resources/container-diffuse.png");
-		mSpecularTexture = std::make_unique<Texture>("Resources/container-specular.png");
-		mEmissiveTexture = std::make_unique<Texture>("Resources/container-emissive2.png");
-
+		mDiffuseTexture = std::make_unique<Texture2D>("Resources/container-diffuse.png");
+		mSpecularTexture = std::make_unique<Texture2D>("Resources/container-specular.png");
+		mEmissiveTexture = std::make_unique<Texture2D>("Resources/container-emissive2.png");
 
 		mModel = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
 		mView = camera.GetViewMatrix();
@@ -190,9 +189,9 @@ private:
 	std::unique_ptr<VertexBuffer> mVBO;
 	std::unique_ptr<IndexBuffer> mIBO;
 	std::unique_ptr<Shader> mShader;
-	std::unique_ptr<Texture> mDiffuseTexture;
-	std::unique_ptr<Texture> mSpecularTexture;
-	std::unique_ptr<Texture> mEmissiveTexture;
+	std::unique_ptr<Texture2D> mDiffuseTexture;
+	std::unique_ptr<Texture2D> mSpecularTexture;
+	std::unique_ptr<Texture2D> mEmissiveTexture;
 
 	std::vector<float> mVertex;
 	std::vector<unsigned int> mIndices;

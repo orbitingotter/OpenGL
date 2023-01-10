@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "Texture.h"
+#include "Texture2D.h"
 
 
 #include <GL/glew.h>
 #include "stb_image/stb_image.h"
 
-Texture::Texture(const std::string& filePath)
-	: mID(0), mFilePath(filePath), mImageBuffer(nullptr), mWidth(0), mHeight(0), mChannels(0)
+Texture2D::Texture2D(const std::string& filePath, const std::string& type)
+	: mID(0), mFilePath(filePath), mType(type), mImageBuffer(nullptr), mWidth(0), mHeight(0), mChannels(0)
 {
 	stbi_set_flip_vertically_on_load(1);
 	mImageBuffer = stbi_load(filePath.c_str(), &mWidth, &mHeight, &mChannels, 4);
@@ -34,18 +34,18 @@ Texture::Texture(const std::string& filePath)
 	}
 }
 
-Texture::~Texture()
+Texture2D::~Texture2D()
 {
 	glDeleteTextures(1, &mID);
 }
 
-void Texture::Bind(unsigned int slot) const
+void Texture2D::Bind(unsigned int slot) const
 {
 	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, mID);
 }
 
-void Texture::Unbind() const
+void Texture2D::Unbind() const
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

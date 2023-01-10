@@ -102,3 +102,11 @@ void Renderer::Draw(const VertexArray& vao, int count, const Shader& shader) con
 	shader.Bind();
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 }
+
+void Renderer::Draw(Mesh& mesh, Shader& shader)
+{
+	mesh.BindTextures(shader);
+	mesh.Bind();
+	glDrawElements(GL_TRIANGLES, mesh.GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+
+}

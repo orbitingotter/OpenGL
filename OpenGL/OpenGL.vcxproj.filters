@@ -33,7 +33,7 @@
     <ClCompile Include="Source\Graphics\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Texture.cpp">
+    <ClCompile Include="Source\Graphics\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Vendor\stb_image\stb_image.cpp">
@@ -73,6 +73,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -490,6 +493,7 @@
     <None Include="Source\Shaders\Phong.glsl" />
     <None Include="Source\Shaders\SolidBasic.glsl" />
     <None Include="Source\Shaders\LightingMap.glsl" />
+    <None Include="Source\Shaders\Mesh.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Graphics\VertexBuffer.h">
@@ -513,7 +517,7 @@
     <ClInclude Include="Source\Vendor\stb_image\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Texture.h">
+    <ClInclude Include="Source\Graphics\Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Vendor\glm\detail\_features.hpp">
@@ -1408,6 +1412,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tests\MeshTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

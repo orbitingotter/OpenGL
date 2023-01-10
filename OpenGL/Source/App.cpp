@@ -6,10 +6,11 @@
 #include "Tests/CubeTest.h"
 #include "Tests/PhongTest.h"
 #include "Tests/LightingMapTest.h"
+#include "Tests/MeshTest.h"
 
 int main()
 {
-	Sandbox* scene = new LightingMapTest();
+	Sandbox* scene = new MeshTest();
 
 	scene->Run();
 
