@@ -110,3 +110,10 @@ void Renderer::Draw(Mesh& mesh, Shader& shader)
 	glDrawElements(GL_TRIANGLES, mesh.GetIndexCount(), GL_UNSIGNED_INT, nullptr);
 
 }
+
+void Renderer::Draw(Model& model, Shader& shader)
+{
+	auto& meshes = model.GetMeshes();
+	for (unsigned int i = 0; i < meshes.size(); i++)
+		Draw(meshes[i], shader);
+}

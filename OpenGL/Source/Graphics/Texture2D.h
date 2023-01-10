@@ -10,6 +10,8 @@ public:
 	void Unbind() const;
 
 	inline const std::string& GetType() const { return mType; }
+	inline const std::string& GetFilePath() const { return mFilePath; }
+
 private:
 	unsigned int mID;
 	std::string mFilePath;

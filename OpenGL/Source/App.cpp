@@ -7,10 +7,11 @@
 #include "Tests/PhongTest.h"
 #include "Tests/LightingMapTest.h"
 #include "Tests/MeshTest.h"
+#include "Tests/ModelTest.h"
 
 int main()
 {
-	Sandbox* scene = new MeshTest();
+	Sandbox* scene = new ModelTest();
 
 	scene->Run();
 

@@ -36,7 +36,8 @@ Texture2D::Texture2D(const std::string& filePath, const std::string& type)
 
 Texture2D::~Texture2D()
 {
-	glDeleteTextures(1, &mID);
+	//std::cout << "delete tex\n";
+	//glDeleteTextures(1, &mID);
 }
 
 void Texture2D::Bind(unsigned int slot) const

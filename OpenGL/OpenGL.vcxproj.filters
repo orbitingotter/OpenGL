@@ -78,6 +78,9 @@
     <ClCompile Include="Source\Graphics\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shaders\Basic.glsl" />
@@ -494,6 +497,7 @@
     <None Include="Source\Shaders\SolidBasic.glsl" />
     <None Include="Source\Shaders\LightingMap.glsl" />
     <None Include="Source\Shaders\Mesh.glsl" />
+    <None Include="Source\Shaders\Model.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Graphics\VertexBuffer.h">
@@ -1418,6 +1422,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Tests\MeshTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tests\ModelTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

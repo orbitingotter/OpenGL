@@ -2,11 +2,11 @@
 #include "Mesh.h"
 
 Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture2D>& textures)
+	: mVertices(vertices), mIndices(indices), mTextures(textures),
+	mVAO(),
+	mVBO(vertices.data(), vertices.size() * sizeof(Vertex)),
+	mIBO(indices.data(), mIndices.size())
 {
-	mVertices = vertices;
-	mIndices = indices;
-	mTextures = textures;
-
 	SetupMesh();
 }
 
@@ -37,15 +37,12 @@ void Mesh::BindTextures(Shader& shader)
 
 void Mesh::SetupMesh()
 {
-	mVAO = std::make_unique<VertexArray>();
-	mVBO = std::make_unique<VertexBuffer>(mVertices.data(), mVertices.size() * sizeof(Vertex));
-	mIBO = std::make_unique<IndexBuffer>(mIndices.data(), mIndices.size() * sizeof(unsigned int));
 
 	BufferLayout layout;
 	layout.Push<float>(3);	// position
 	layout.Push<float>(3);	// normal
 	layout.Push<float>(2);	// texture coordinates
 
-	mVAO->AddBuffer(*mVBO, *mIBO, layout);
+	mVAO.AddBuffer(mVBO, mIBO, layout);
 
 }

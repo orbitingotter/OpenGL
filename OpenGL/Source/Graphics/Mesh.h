@@ -19,8 +19,8 @@ public:
 	~Mesh();
 
 	void BindTextures(Shader& shader);
-	inline void Bind() const { mVAO->Bind(); }
-	inline const unsigned int GetIndexCount() const { return mIBO->GetCount(); }
+	inline void Bind() const { mVAO.Bind(); }
+	inline const unsigned int GetIndexCount() const { return mIBO.GetCount(); }
 
 private:
 	void SetupMesh();
@@ -30,7 +30,7 @@ private:
 	std::vector<unsigned int> mIndices;
 	std::vector<Texture2D> mTextures;
 
-	std::unique_ptr<VertexArray> mVAO;
-	std::unique_ptr<VertexBuffer> mVBO;
-	std::unique_ptr<IndexBuffer> mIBO;
+	VertexArray mVAO;
+	VertexBuffer mVBO;
+	IndexBuffer mIBO;
 };

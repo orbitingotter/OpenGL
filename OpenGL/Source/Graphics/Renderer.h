@@ -5,6 +5,7 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "Model.h"
 
 class Renderer
 {
@@ -16,4 +17,5 @@ public:
 public:
 	void Draw(const VertexArray& vao, int count, const Shader& shader) const;
 	void Draw(Mesh& mesh, Shader& shader);
+	void Draw(Model& model, Shader& shader);
 };
