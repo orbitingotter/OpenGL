@@ -43,8 +43,8 @@ public:
 		mShader->SetUniform("uCameraPos", camera.GetPosition());
 
 		const float radius = 5.0f;
-		//mLightPos.x = radius * sin(glfwGetTime());
-		//mLightPos.z = radius * cos(glfwGetTime());
+		mLightPos.x = radius * sin(glfwGetTime());
+		mLightPos.z = radius * cos(glfwGetTime());
 		mLightPos.y = 10.0f;
 
 		mLightShader->Bind();
