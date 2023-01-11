@@ -6,7 +6,7 @@ Model::Model(const std::string& filePath)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filePath,
-		aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+		aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -88,6 +88,9 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		LoadMaterialTextures(textures, material, aiTextureType_DIFFUSE, "Diffuse");
 		// specular
 		LoadMaterialTextures(textures, material, aiTextureType_SPECULAR, "Specular");
+		// normal
+		LoadMaterialTextures(textures, material, aiTextureType_NORMALS, "Normal");
+
 	}
 
 	mVertexCount += vertices.size();
@@ -102,9 +105,9 @@ void Model::LoadMaterialTextures(std::vector<Texture2D>& textures, aiMaterial* m
 	std::string completeFilePath;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
-		aiString str;
-		mat->GetTexture(type, i, &str);
-		completeFilePath = mDirectory + '/' + str.C_Str();
+		aiString relPath;
+		mat->GetTexture(type, i, &relPath);
+		completeFilePath = mDirectory + '/' + relPath.C_Str();
 
 		bool skip = false;
 		for (unsigned int j = 0; j < mTextureCache.size(); j++)

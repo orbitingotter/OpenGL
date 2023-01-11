@@ -33,7 +33,7 @@ uniform vec3 uLightPos;
 uniform vec3 uCameraPos;
 uniform sampler2D uTextureDiffuse0;
 uniform sampler2D uTextureSpecular0;
-
+uniform sampler2D uTextureNormal0;
 
 out vec4 fragColor;
 
@@ -47,6 +47,8 @@ void main()
 
 
     float diffuse, specular, ambient;
+
+    vNormal = texture(uTextureNormal0, vTexCoords);
 
     vec3 lightDir = normalize(uLightPos - vWorldPos.xyz);
     vec3 cameraDir = normalize(uCameraPos - vWorldPos.xyz);

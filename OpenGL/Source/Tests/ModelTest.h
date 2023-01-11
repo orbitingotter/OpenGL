@@ -16,16 +16,16 @@ public:
 	{
 		mShader = std::make_unique<Shader>("Source/Shaders/Model.glsl");
 		float start = glfwGetTime();
-		mModel = std::make_unique<Model>("Resources/backpack/backpack.obj");
+		mModel = std::make_unique<Model>("Resources/Models/sponza/sponza.obj");
 		std::cout << "Model took " << glfwGetTime() - start << "s to load\n";
 
 		mLightShader = std::make_unique<Shader>("Source/Shaders/SolidBasic.glsl");
-		mLightModel = std::make_unique<Model>("Resources/cube.obj");
+		mLightModel = std::make_unique<Model>("Resources/Models/cube.obj");
 		mLightPos = glm::vec3(0.0f, 0.0f, -2.0f);
 
-		mModelMat = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
+		mModelMat = glm::scale(glm::mat4(1.0f), glm::vec3(0.01f));
 		mView = camera.GetViewMatrix();
-		mProj = glm::perspective(glm::radians(60.0f), window.GetAspectRatio(), 0.1f, 100.0f);
+		mProj = glm::perspective(glm::radians(60.0f), window.GetAspectRatio(), 0.1f, 1000.0f);
 
 	}
 
@@ -43,8 +43,9 @@ public:
 		mShader->SetUniform("uCameraPos", camera.GetPosition());
 
 		const float radius = 5.0f;
-		mLightPos.x = radius * sin(glfwGetTime());
-		mLightPos.z = radius * cos(glfwGetTime());
+		//mLightPos.x = radius * sin(glfwGetTime());
+		//mLightPos.z = radius * cos(glfwGetTime());
+		mLightPos.y = 10.0f;
 
 		mLightShader->Bind();
 		mLightShader->SetUniform("uModel", glm::scale(glm::translate(glm::mat4(1.0f), mLightPos), glm::vec3(0.2f)));

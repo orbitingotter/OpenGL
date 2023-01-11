@@ -17,7 +17,7 @@ void main()
 {
     gl_Position = (uProj * uView * uModel) * aPosition;
 
-    vNormal = mat3(transpose(inverse(uModel))) * aNormal;
+    vNormal = normalize(mat3(transpose(inverse(uModel))) * aNormal);
     vWorldPos = uModel * aPosition;
     vTexCoords = aTexCoords;
 }
@@ -33,6 +33,7 @@ uniform vec3 uLightPos;
 uniform vec3 uCameraPos;
 uniform sampler2D uTextureDiffuse0;
 uniform sampler2D uTextureSpecular0;
+uniform sampler2D uTextureNormal0;
 
 
 out vec4 fragColor;
@@ -44,7 +45,6 @@ void main()
     float diffuseStrength = 1.0f;
     float specularStrength = 1.0f;
     float specularPower  = 32;
-
 
     float diffuse, specular, ambient;
 

@@ -86,8 +86,8 @@ Renderer::Renderer()
 	glEnable(GL_DEPTH_TEST);
 
 	// Enables back culling
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 }
 
 void Renderer::Clear(float r, float g, float b, float a) const

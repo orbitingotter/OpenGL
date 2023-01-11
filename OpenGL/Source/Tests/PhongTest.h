@@ -74,7 +74,7 @@ public:
 		//______________
 
 		Assimp::Importer imp;
-		const aiScene* model = imp.ReadFile("Resources/standford-bunny.stl", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+		const aiScene* model = imp.ReadFile("Resources/Models/standford-bunny.stl", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
 		const auto pMesh = model->mMeshes[0];
 		const float scale = 0.02f;
