@@ -15,7 +15,9 @@ public:
 	ModelTest()
 	{
 		mShader = std::make_unique<Shader>("Source/Shaders/Model.glsl");
+		float start = glfwGetTime();
 		mModel = std::make_unique<Model>("Resources/backpack/backpack.obj");
+		std::cout << "Model took " << glfwGetTime() - start << "s to load\n";
 
 		mLightShader = std::make_unique<Shader>("Source/Shaders/SolidBasic.glsl");
 		mLightModel = std::make_unique<Model>("Resources/cube.obj");

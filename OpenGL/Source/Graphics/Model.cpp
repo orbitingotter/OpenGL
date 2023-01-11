@@ -16,13 +16,15 @@ Model::Model(const std::string& filePath)
 	// retrieve the directory path of the filepath
 	mDirectory = filePath.substr(0, filePath.find_last_of('/'));
 
-	mMeshes.reserve(100);
+	mNumMeshes = scene->mNumMeshes;
+	mMeshes.reserve(mNumMeshes);
 	ProcessNode(scene->mRootNode, scene);
 }
 
 Model::~Model()
 {
 }
+
 
 // traverse through all the nodes and process their meshes
 void Model::ProcessNode(aiNode* node, const aiScene* scene)
@@ -91,7 +93,6 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	mVertexCount += vertices.size();
 	mIndexCount += indices.size() / 3;
 	mTextureCount = mTextureCache.size();
-	mNumMeshes++;
 
 	mMeshes.emplace_back(vertices, indices, textures);
 }
