@@ -25,7 +25,7 @@ and used for testing various graphics / rendering techniques such as -
 ### Screenshots
 ![SponzaScreenshot](https://user-images.githubusercontent.com/112700146/211896625-0da1e315-d9cb-4a74-b601-f62a1029daec.jpg)
 
-![SponzaVideo](https://user-images.githubusercontent.com/112700146/211896959-34e0a19b-f336-4aec-8c85-71e2d961e6e2.mp4)
+https://user-images.githubusercontent.com/112700146/211896959-34e0a19b-f336-4aec-8c85-71e2d961e6e2.mp4
 
 ---
 ### Installation
@@ -37,10 +37,9 @@ and used for testing various graphics / rendering techniques such as -
 ```bash
 git clone https://github.com/orbitingotter/OpenGL.git
 ```
-
 2. Download 3D Models (not included in project because models are freaking huuuge)
 
-    - [Sponza Scene](https://www.markdownguide.org)
+    - [Sponza Scene](https://casual-effects.com/g3d/data10/index.html#mesh8)
 
 3. Extract and place it in OpenGL/Resources/Models
 4. Set your default test (recommened ModelTest) in main (App.cpp)
