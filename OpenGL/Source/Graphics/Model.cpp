@@ -2,7 +2,7 @@
 #include "Model.h"
 
 Model::Model(const std::string& filePath)
-	: mVertexCount(0), mIndexCount(0), mNumMeshes(0)
+	: mVertexCount(0), mIndexCount(0), mTextureCount(0), mNumMeshes(0)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filePath,
@@ -46,11 +46,9 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<unsigned int> indices;
 	std::vector<Texture2D> textures;
 
-	// optimisation - reserve space in vectors
-	vertices.reserve(mesh->mNumVertices);
-	indices.reserve(mesh->mNumFaces * 3); // assume triangulated
 
 	// Vertices
+	vertices.reserve(mesh->mNumVertices);
 	Vertex vertex;
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -68,6 +66,7 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	}
 
 	// Indices
+	indices.reserve(mesh->mNumFaces * 3); // assume triangulated
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -91,12 +90,13 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
 	mVertexCount += vertices.size();
 	mIndexCount += indices.size() / 3;
+	mTextureCount = mTextureCache.size();
 	mNumMeshes++;
 
 	mMeshes.emplace_back(vertices, indices, textures);
 }
 
-void Model::LoadMaterialTextures(std::vector<Texture2D>& textures, aiMaterial* mat, aiTextureType type, std::string typeName)
+void Model::LoadMaterialTextures(std::vector<Texture2D>& textures, aiMaterial* mat, aiTextureType type, const std::string& typeName)
 {
 	std::string completeFilePath;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)

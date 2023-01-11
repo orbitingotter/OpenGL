@@ -12,15 +12,18 @@ public:
 	~Model();
 
 	std::vector<Mesh>& GetMeshes() { return mMeshes; }
+
+	// stats
 	inline const int GetVertexCount() { return mVertexCount; }
 	inline const int GetIndexCount() { return mIndexCount; }
+	inline const int GetTextureCount() { return mTextureCount; }
 	inline const int GetNumMeshes() { return mNumMeshes; }
 
 
 private:
 	void ProcessNode(aiNode* node, const aiScene* scene);
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
-	void LoadMaterialTextures(std::vector<Texture2D>& textures,aiMaterial* mat, aiTextureType type, std::string typeName);
+	void LoadMaterialTextures(std::vector<Texture2D>& textures,aiMaterial* mat, aiTextureType type, const std::string& typeName);
 private:
 	std::vector<Mesh> mMeshes;
 	std::string mDirectory;
@@ -28,6 +31,7 @@ private:
 
 	unsigned int mVertexCount;
 	unsigned int mIndexCount;
+	unsigned int mTextureCount;
 	unsigned int mNumMeshes;
 
 };
