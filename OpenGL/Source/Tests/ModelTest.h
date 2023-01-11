@@ -80,6 +80,7 @@ public:
 
 			ImGui::Text("Vertex Count : %d", mModel->GetVertexCount());
 			ImGui::Text("Index Count : %d", mModel->GetIndexCount());
+			ImGui::Text("Mesh Count : %d", mModel->GetNumMeshes());
 
 			ImGui::End();
 		}

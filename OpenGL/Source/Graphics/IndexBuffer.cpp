@@ -13,7 +13,7 @@ IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count)
 
 IndexBuffer::~IndexBuffer()
 {
-	//glDeleteBuffers(1, &mID);
+	glDeleteBuffers(1, &mID);
 }
 
 void IndexBuffer::Bind() const

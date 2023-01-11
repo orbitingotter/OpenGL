@@ -14,16 +14,20 @@ public:
 	std::vector<Mesh>& GetMeshes() { return mMeshes; }
 	inline const int GetVertexCount() { return mVertexCount; }
 	inline const int GetIndexCount() { return mIndexCount; }
+	inline const int GetNumMeshes() { return mNumMeshes; }
+
 
 private:
 	void ProcessNode(aiNode* node, const aiScene* scene);
-	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
-	std::vector<Texture2D> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
+	void LoadMaterialTextures(std::vector<Texture2D>& textures,aiMaterial* mat, aiTextureType type, std::string typeName);
 private:
 	std::vector<Mesh> mMeshes;
 	std::string mDirectory;
 	std::vector<Texture2D> mTextureCache;
 
-	int mVertexCount;
-	int mIndexCount;
+	unsigned int mVertexCount;
+	unsigned int mIndexCount;
+	unsigned int mNumMeshes;
+
 };
