@@ -63,9 +63,9 @@ void Camera::OnUpdate(Window& window, float delta)
 
 		// up - down
 		if (window.IsKeyPressed(GLFW_KEY_SPACE))
-			mPos += mSpeed * mUpDir;
+			mPos += mSpeed * mWorldUp;
 		if (window.IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
-			mPos -= mSpeed * mUpDir;
+			mPos -= mSpeed * mWorldUp;
 
 		// MOUSE
 
