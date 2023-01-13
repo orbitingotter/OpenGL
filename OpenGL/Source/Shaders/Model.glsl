@@ -55,6 +55,9 @@ void main()
     float attentuation = 1 / (a * pow(x,2) + b * x + c);
     vec3 reflectDir = reflect(-lightDir, vNormal);
 
+    // test
+    //attentuation = 1.0f;
+
     ambient = 0.2f;
     diffuse = diffuseStrength * attentuation * max(dot(normalize(vNormal), lightDir), 0.0);
     specular = specularStrength * attentuation * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);

@@ -82,7 +82,10 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		// Material / Textures
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		textures.reserve(material->GetTextureCount(aiTextureType_DIFFUSE) + material->GetTextureCount(aiTextureType_SPECULAR));
+		textures.reserve(
+			material->GetTextureCount(aiTextureType_DIFFUSE) +
+			material->GetTextureCount(aiTextureType_SPECULAR) +
+			material->GetTextureCount(aiTextureType_NORMALS));
 
 		// diffuse
 		LoadMaterialTextures(textures, material, aiTextureType_DIFFUSE, "Diffuse");
@@ -90,6 +93,8 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		LoadMaterialTextures(textures, material, aiTextureType_SPECULAR, "Specular");
 		// normal
 		LoadMaterialTextures(textures, material, aiTextureType_NORMALS, "Normal");
+
+		//std::cout << textures.size() << std::endl;
 
 	}
 
