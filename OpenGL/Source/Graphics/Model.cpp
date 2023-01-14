@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Model.h"
 
+
 Model::Model(const std::string& filePath)
 	: mVertexCount(0), mIndexCount(0), mTextureCount(0), mNumMeshes(0)
 {
@@ -92,7 +93,7 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		// specular
 		LoadMaterialTextures(textures, material, aiTextureType_SPECULAR, "Specular");
 		// normal
-		LoadMaterialTextures(textures, material, aiTextureType_NORMALS, "Normal");
+		//LoadMaterialTextures(textures, material, aiTextureType_NORMALS, "Normal");
 
 		//std::cout << textures.size() << std::endl;
 
@@ -114,6 +115,7 @@ void Model::LoadMaterialTextures(std::vector<Texture2D>& textures, aiMaterial* m
 		mat->GetTexture(type, i, &relPath);
 		completeFilePath = mDirectory + '/' + relPath.C_Str();
 
+		/*
 		bool skip = false;
 		for (unsigned int j = 0; j < mTextureCache.size(); j++)
 		{
@@ -130,6 +132,17 @@ void Model::LoadMaterialTextures(std::vector<Texture2D>& textures, aiMaterial* m
 			mTextureCache.emplace_back(completeFilePath, typeName);
 			textures.emplace_back(mTextureCache.back());
 		}
+		*/
+
+
+		if (mTextureCache.find(completeFilePath) != mTextureCache.end())
+		{
+			textures.emplace_back(mTextureCache.at(completeFilePath));
+			continue;
+		}
+
+		mTextureCache.emplace(std::make_pair(completeFilePath, std::move(Texture2D(completeFilePath, typeName))));
+		textures.emplace_back(mTextureCache.at(completeFilePath));
 	}
 }
 

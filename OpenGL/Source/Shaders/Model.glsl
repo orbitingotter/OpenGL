@@ -48,6 +48,7 @@ void main()
 
     float diffuse, specular, ambient;
 
+
     vec3 lightDir = normalize(uLightPos - vWorldPos.xyz);
     vec3 cameraDir = normalize(uCameraPos - vWorldPos.xyz);
     float x = length(uLightPos - vWorldPos.xyz);

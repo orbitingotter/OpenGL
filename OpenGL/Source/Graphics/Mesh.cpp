@@ -21,19 +21,39 @@ void Mesh::BindTextures(Shader& shader)
 	unsigned int specularN = 0;
 	unsigned int normalN = 0;
 
+	/*
 	for (unsigned int i = 0; i < mTextures.size(); i++)
 	{
+		std::string finalUniformName = "uTexture";
 		std::string name = mTextures[i].GetType();
 		int number = 0;
 		if (name == "Diffuse")
 			number = diffuseN++;
 		else if (name == "Specular")
 			number = specularN++;
-		else if (name == "Normal")
-			number = normalN++;
+
+		finalUniformName += name + std::to_string(number);
 
 		mTextures[i].Bind(i);
-		shader.SetUniform("uTexture" + name + std::to_string(number), i);
+		shader.SetUniform(finalUniformName, i);
+	}
+	*/
+
+	// same order as loaded
+	if (mTextures.size() >= 1)
+	{
+		mTextures[0].Bind(0);
+		shader.SetUniform("uTextureDiffuse0", 0);
+	}
+	if (mTextures.size() >= 2)
+	{
+		mTextures[1].Bind(1);
+		shader.SetUniform("uTextureSpecular0", 1);
+	}
+	if (mTextures.size() >= 3)
+	{
+		mTextures[2].Bind(2);
+		shader.SetUniform("uTextureNormal0", 2);
 	}
 }
 

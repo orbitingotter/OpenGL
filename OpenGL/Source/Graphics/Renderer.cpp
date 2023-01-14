@@ -108,7 +108,6 @@ void Renderer::Draw(Mesh& mesh, Shader& shader)
 	mesh.BindTextures(shader);
 	mesh.Bind();
 	glDrawElements(GL_TRIANGLES, mesh.GetIndexCount(), GL_UNSIGNED_INT, nullptr);
-
 }
 
 void Renderer::Draw(Model& model, Shader& shader)

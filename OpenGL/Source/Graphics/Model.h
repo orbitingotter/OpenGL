@@ -27,7 +27,8 @@ private:
 private:
 	std::vector<Mesh> mMeshes;
 	std::string mDirectory;
-	std::vector<Texture2D> mTextureCache;
+	std::unordered_map<std::string, Texture2D> mTextureCache;
+	//std::vector<Texture2D> mTextureCache;
 
 	unsigned int mVertexCount;
 	unsigned int mIndexCount;
