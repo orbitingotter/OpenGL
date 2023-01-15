@@ -60,6 +60,9 @@ void main()
     diffuse = diffuseStrength * attentuation * max(dot(normalize(vNormal), lightDir), 0.0);
     specular = specularStrength * attentuation * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);
 
+    if(texture(uTextureDiffuse0, vTexCoords).a < 0.5)
+        discard;
+
     vec3 ambientColor = ambient * texture(uTextureDiffuse0, vTexCoords).rgb;
     vec3 diffuseColor = diffuse * texture(uTextureDiffuse0, vTexCoords).rgb;
     vec3 specularColor = specular * texture(uTextureSpecular0, vTexCoords).rgb;
