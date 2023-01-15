@@ -6,7 +6,6 @@
 #include "Tests/CubeTest.h"
 #include "Tests/PhongTest.h"
 #include "Tests/LightingMapTest.h"
-#include "Tests/MeshTest.h"
 #include "Tests/ModelTest.h"
 
 int main()

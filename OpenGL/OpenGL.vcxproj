@@ -222,7 +222,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Source\Tests\CubeTest.cpp" />
     <ClCompile Include="Source\Vendor\glm\detail\glm.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -282,7 +281,6 @@
   <ItemGroup>
     <None Include="Source\Shaders\Basic.glsl" />
     <None Include="Source\Shaders\LightingMap.glsl" />
-    <None Include="Source\Shaders\Mesh.glsl" />
     <None Include="Source\Shaders\Model.glsl" />
     <None Include="Source\Shaders\Phong.glsl" />
     <None Include="Source\Shaders\SolidBasic.glsl" />
@@ -439,7 +437,6 @@
     <ClInclude Include="Source\Tests\CubeTest.h" />
     <ClInclude Include="Source\Sandbox.h" />
     <ClInclude Include="Source\Tests\LightingMapTest.h" />
-    <ClInclude Include="Source\Tests\MeshTest.h" />
     <ClInclude Include="Source\Tests\ModelTest.h" />
     <ClInclude Include="Source\Tests\PhongTest.h" />
     <ClInclude Include="Source\Vendor\glm\common.hpp" />
