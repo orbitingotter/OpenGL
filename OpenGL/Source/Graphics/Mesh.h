@@ -12,6 +12,11 @@ struct Vertex
 	glm::vec2 TexCoords;
 };
 
+struct Material
+{
+
+};
+
 class Mesh
 {
 public:

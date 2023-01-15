@@ -45,6 +45,7 @@ void main()
     float diffuseStrength = 1.0f;
     float specularStrength = 1.0f;
     float specularPower  = 32;
+    float a =  0.0075f, b = 0.045, c = 1.0f;
 
     float diffuse, specular, ambient;
 
@@ -52,12 +53,8 @@ void main()
     vec3 lightDir = normalize(uLightPos - vWorldPos.xyz);
     vec3 cameraDir = normalize(uCameraPos - vWorldPos.xyz);
     float x = length(uLightPos - vWorldPos.xyz);
-    float a =  0.0075f, b = 0.045, c = 1.0f;
     float attentuation = 1 / (a * pow(x,2) + b * x + c);
     vec3 reflectDir = reflect(-lightDir, vNormal);
-
-    // test
-    //attentuation = 1.0f;
 
     ambient = 0.2f;
     diffuse = diffuseStrength * attentuation * max(dot(normalize(vNormal), lightDir), 0.0);
@@ -66,12 +63,6 @@ void main()
     vec3 ambientColor = ambient * texture(uTextureDiffuse0, vTexCoords).rgb;
     vec3 diffuseColor = diffuse * texture(uTextureDiffuse0, vTexCoords).rgb;
     vec3 specularColor = specular * texture(uTextureSpecular0, vTexCoords).rgb;
-
-    // adding emissive only to rough texture
-    //vec3 emissiveColor = vec3(0.0);
-    //if(texture(uSpecularTex, vTexCoords).r == 0)
-        //emissiveColor = 0.6f * texture(uEmissiveTex, vTexCoords).rgb;
-
 
     vec3 finalColor = (diffuseColor + specularColor + ambientColor) * materialColor;
     fragColor = vec4(finalColor, 1.0);
