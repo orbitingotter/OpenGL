@@ -7,6 +7,7 @@
 #include "Tests/PhongTest.h"
 #include "Tests/LightingMapTest.h"
 #include "Tests/ModelTest.h"
+#include "Tests/StencilTest.h"
 
 int main()
 {

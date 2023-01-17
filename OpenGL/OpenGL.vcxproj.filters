@@ -494,6 +494,7 @@
     <None Include="Source\Shaders\SolidBasic.glsl" />
     <None Include="Source\Shaders\LightingMap.glsl" />
     <None Include="Source\Shaders\Model.glsl" />
+    <None Include="Source\Shaders\DepthTest.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Graphics\VertexBuffer.h">
@@ -1421,6 +1422,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Tests\ModelTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tests\StencilTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

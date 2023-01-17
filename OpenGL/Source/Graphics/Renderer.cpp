@@ -92,7 +92,7 @@ Renderer::Renderer()
 
 void Renderer::Clear(float r, float g, float b, float a) const
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glClearColor(r, g, b, a);
 }
 

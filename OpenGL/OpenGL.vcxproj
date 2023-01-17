@@ -280,6 +280,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shaders\Basic.glsl" />
+    <None Include="Source\Shaders\DepthTest.glsl" />
     <None Include="Source\Shaders\LightingMap.glsl" />
     <None Include="Source\Shaders\Model.glsl" />
     <None Include="Source\Shaders\Phong.glsl" />
@@ -439,6 +440,7 @@
     <ClInclude Include="Source\Tests\LightingMapTest.h" />
     <ClInclude Include="Source\Tests\ModelTest.h" />
     <ClInclude Include="Source\Tests\PhongTest.h" />
+    <ClInclude Include="Source\Tests\StencilTest.h" />
     <ClInclude Include="Source\Vendor\glm\common.hpp" />
     <ClInclude Include="Source\Vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="Source\Vendor\glm\detail\compute_vector_relational.hpp" />
