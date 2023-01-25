@@ -437,6 +437,7 @@
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\Tests\CubeTest.h" />
     <ClInclude Include="Source\Sandbox.h" />
+    <ClInclude Include="Source\Tests\FrameBufTest.h" />
     <ClInclude Include="Source\Tests\LightingMapTest.h" />
     <ClInclude Include="Source\Tests\ModelTest.h" />
     <ClInclude Include="Source\Tests\PhongTest.h" />

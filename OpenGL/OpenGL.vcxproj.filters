@@ -1427,5 +1427,8 @@
     <ClInclude Include="Source\Tests\StencilTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Tests\FrameBufTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

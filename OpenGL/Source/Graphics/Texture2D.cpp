@@ -37,7 +37,6 @@ Texture2D::Texture2D(const std::string& filePath, const std::string& type)
 	}
 }
 
-static int count = 1;
 Texture2D::~Texture2D()
 {
 	//glDeleteTextures(1, &mID);

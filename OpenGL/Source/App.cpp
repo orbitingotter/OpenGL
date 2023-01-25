@@ -8,10 +8,12 @@
 #include "Tests/LightingMapTest.h"
 #include "Tests/ModelTest.h"
 #include "Tests/StencilTest.h"
+#include "Tests/FrameBufTest.h"
+
 
 int main()
 {
-	Sandbox* scene = new ModelTest();
+	Sandbox* scene = new FrameBufTest();
 
 	scene->Run();
 
