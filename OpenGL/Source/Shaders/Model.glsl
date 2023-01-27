@@ -1,5 +1,5 @@
 #shader vertex
-#version 330 core
+#version 450 core
 
 layout (location = 0) in vec4 aPosition;
 layout (location = 1) in vec3 aNormal;
@@ -23,7 +23,7 @@ void main()
 }
 
 #shader pixel
-#version 330 core
+#version 450 core
 
 in vec3 vNormal;
 in vec4 vWorldPos;
@@ -31,9 +31,9 @@ in vec2 vTexCoords;
 
 uniform vec3 uLightPos;
 uniform vec3 uCameraPos;
-uniform sampler2D uTextureDiffuse0;
-uniform sampler2D uTextureSpecular0;
-uniform sampler2D uTextureNormal0;
+layout (binding = 0) uniform sampler2D uTextureDiffuse0;
+layout (binding = 1) uniform sampler2D uTextureSpecular0;
+layout (binding = 2) uniform sampler2D uTextureNormal0;
 
 
 out vec4 fragColor;

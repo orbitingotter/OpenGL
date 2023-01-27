@@ -14,14 +14,18 @@ Mesh::~Mesh()
 {
 }
 
+const std::string diffuse = "uTextureDiffuse0";
+const std::string spec = "uTextureSpecular0";
+
+
 void Mesh::BindTextures(Shader& shader)
 {
-	shader.Bind();
+	/*
 	unsigned int diffuseN = 0;
 	unsigned int specularN = 0;
 	unsigned int normalN = 0;
 
-	/*
+
 	for (unsigned int i = 0; i < mTextures.size(); i++)
 	{
 		std::string finalUniformName = "uTexture";
@@ -43,17 +47,17 @@ void Mesh::BindTextures(Shader& shader)
 	if (mTextures.size() >= 1)
 	{
 		mTextures[0].Bind(0);
-		shader.SetUniform("uTextureDiffuse0", 0);
+		//shader.SetUniform(diffuse, 0);
 	}
 	if (mTextures.size() >= 2)
 	{
 		mTextures[1].Bind(1);
-		shader.SetUniform("uTextureSpecular0", 1);
+		//shader.SetUniform(spec, 1);
 	}
 	if (mTextures.size() >= 3)
 	{
-		mTextures[2].Bind(2);
-		shader.SetUniform("uTextureNormal0", 2);
+		//mTextures[2].Bind(2);
+		//shader.SetUniform("uTextureNormal0", 2);
 	}
 }
 
