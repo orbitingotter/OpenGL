@@ -120,7 +120,6 @@ public:
 		renderer.Draw(*mModel, *mShader);
 		renderer.Draw(*mLightModel, *mLightShader);
 
-
 		glDisable(GL_DEPTH_TEST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
