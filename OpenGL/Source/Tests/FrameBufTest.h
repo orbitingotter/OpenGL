@@ -5,6 +5,8 @@
 #include "Window.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Model.h"
+#include "Graphics/Framebuffer.h"
+
 
 #include <memory>
 
@@ -12,9 +14,6 @@
 class FrameBufTest : public Sandbox
 {
 public:
-	unsigned int fbo;
-	unsigned int rbo;
-	unsigned int colorTexture;
 
 
 	FrameBufTest()
@@ -31,29 +30,6 @@ public:
 		mModelMat = glm::scale(glm::mat4(1.0f), glm::vec3(0.01f));
 		mView = camera.GetViewMatrix();
 		mProj = glm::perspective(glm::radians(60.0f), window.GetAspectRatio(), 0.1f, 1000.0f);
-
-
-		glGenFramebuffers(1, &fbo);
-
-		glGenTextures(1, &colorTexture);
-		glBindTexture(GL_TEXTURE_2D, colorTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, window.GetWidth(), window.GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glGenRenderbuffers(1, &rbo);
-		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window.GetWidth(), window.GetHeight());
-
-		// attach textures to framebuffer
-		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		{
-			std::cout << "Incomplete framebuffer\n";
-		}
 
 		const float positions[] =
 		{
@@ -77,6 +53,8 @@ public:
 		layout.Push<float>(2);
 		layout.Push<float>(2);
 		mVAO->AddBuffer(*mVBO, *mIBO, layout);
+
+		mFrameBuf = std::make_unique<Framebuffer>(window.GetWidth(), window.GetHeight());
 
 	}
 
@@ -113,24 +91,22 @@ public:
 
 	void OnRender() override
 	{
-		glEnable(GL_DEPTH_TEST);
+		renderer.SetDepthTest(true);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+		mFrameBuf->Bind();
 		renderer.Clear(0.1f, 0.1f, 0.1f, 0.0f);
+
 		renderer.Draw(*mModel, *mShader);
 		renderer.Draw(*mLightModel, *mLightShader);
 
-		glDisable(GL_DEPTH_TEST);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		renderer.SetDepthTest(false);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, colorTexture);
+		mFrameBuf->Unbind();
+		renderer.Clear(0.1f, 0.1f, 0.1f, 0.0f);
 
+		mFrameBuf->BindColorAttachment(0);
 		mTextureShader->Bind();
 		mTextureShader->SetUniform("uTexture", 0);
-		//mTextureShader->SetUniform("uMVP", mProj * glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -5.0f, 0.0f)) *  glm::mat4(1.0f));
 
 		renderer.Draw(*mVAO, mIBO->GetCount(), *mTextureShader);
 	}
@@ -183,6 +159,8 @@ private:
 	std::unique_ptr<IndexBuffer> mIBO;
 	std::unique_ptr<VertexArray> mVAO;
 	std::unique_ptr<Shader> mTextureShader;
+
+	std::unique_ptr<Framebuffer> mFrameBuf;
 
 
 

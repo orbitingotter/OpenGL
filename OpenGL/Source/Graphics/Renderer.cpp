@@ -95,6 +95,14 @@ void Renderer::Clear(float r, float g, float b, float a) const
 	glClearColor(r, g, b, a);
 }
 
+void Renderer::SetDepthTest(bool enabled)
+{
+	if (enabled)
+		glEnable(GL_DEPTH_TEST);
+	else
+		glDisable(GL_DEPTH_TEST);
+}
+
 void Renderer::Draw(const VertexArray& vao, int count, const Shader& shader) const
 {
 	vao.Bind();
