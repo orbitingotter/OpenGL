@@ -9,11 +9,12 @@
 #include "Tests/ModelTest.h"
 #include "Tests/StencilTest.h"
 #include "Tests/FrameBufTest.h"
+#include "Tests/CubemapTest.h"
 
 
 int main()
 {
-	Sandbox* scene = new FrameBufTest();
+	Sandbox* scene = new CubemapTest();
 
 	scene->Run();
 

@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "Cubemap.h"
 
 class Renderer
 {
@@ -19,4 +20,5 @@ public:
 	void Draw(const VertexArray& vao, int count, const Shader& shader) const;
 	void Draw(Mesh& mesh, Shader& shader);
 	void Draw(Model& model, Shader& shader);
+	void Draw(Cubemap& cubemap, Shader& shader);
 };

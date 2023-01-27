@@ -124,3 +124,10 @@ void Renderer::Draw(Model& model, Shader& shader)
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		Draw(meshes[i], shader);
 }
+
+void Renderer::Draw(Cubemap& cubemap, Shader& shader)
+{
+	cubemap.Bind();
+	shader.Bind();
+	glDrawElements(GL_TRIANGLES, cubemap.GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+}

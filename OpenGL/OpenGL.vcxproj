@@ -199,6 +199,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Graphics\Camera.cpp" />
+    <ClCompile Include="Source\Graphics\Cubemap.cpp" />
     <ClCompile Include="Source\Graphics\Framebuffer.cpp" />
     <ClCompile Include="Source\Graphics\IndexBuffer.cpp" />
     <ClCompile Include="Source\App.cpp" />
@@ -281,6 +282,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shaders\Basic.glsl" />
+    <None Include="Source\Shaders\Cubemap.glsl" />
     <None Include="Source\Shaders\DepthTest.glsl" />
     <None Include="Source\Shaders\LightingMap.glsl" />
     <None Include="Source\Shaders\Model.glsl" />
@@ -427,6 +429,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Graphics\BufferLayout.h" />
     <ClInclude Include="Source\Graphics\Camera.h" />
+    <ClInclude Include="Source\Graphics\Cubemap.h" />
     <ClInclude Include="Source\Graphics\Framebuffer.h" />
     <ClInclude Include="Source\Graphics\IndexBuffer.h" />
     <ClInclude Include="Source\Graphics\Mesh.h" />
@@ -437,6 +440,7 @@
     <ClInclude Include="Source\Graphics\VertexArray.h" />
     <ClInclude Include="Source\Graphics\VertexBuffer.h" />
     <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\Tests\CubemapTest.h" />
     <ClInclude Include="Source\Tests\CubeTest.h" />
     <ClInclude Include="Source\Sandbox.h" />
     <ClInclude Include="Source\Tests\FrameBufTest.h" />
