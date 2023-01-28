@@ -23,6 +23,7 @@ public:
 		mLightShader = std::make_unique<Shader>("Source/Shaders/SolidBasic.glsl");
 		mLightModel = std::make_unique<Model>("Resources/Models/cube.obj");
 		mLightPos = glm::vec3(0.0f, 0.0f, -2.0f);
+		mDirectionalLight = glm::vec3(0.0f, -1.0f, 2.0f);
 
 		mModelMat = glm::scale(glm::mat4(1.0f), glm::vec3(0.01f));
 		mView = camera.GetViewMatrix();
@@ -54,6 +55,7 @@ public:
 		mShader->SetUniform("uView", mView);
 		mShader->SetUniform("uProj", mProj);
 		mShader->SetUniform("uLightPos", mLightPos);
+		mShader->SetUniform("uDirectionalLight", mDirectionalLight);
 		mShader->SetUniform("uCameraPos", camera.GetPosition());
 
 		const float radius = 5.0f;
@@ -69,8 +71,6 @@ public:
 		mCubemapShader->Bind();
 		mCubemapShader->SetUniform("uView", glm::mat4(glm::mat3(mView)));
 		mCubemapShader->SetUniform("uProj", mProj);
-
-
 
 		if (window.IsKeyPressed(GLFW_KEY_ENTER))
 		{
@@ -96,7 +96,7 @@ public:
 		static bool testWindow = true;
 		if (testWindow)
 		{
-			ImGui::Begin("Info", &testWindow);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+			ImGui::Begin("Info", &testWindow);
 			ImGui::Text("FPS : %.1f FPS | Delta : %.2f ms", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
 
 			if (ImGui::Button("VSync"))
@@ -122,6 +122,8 @@ public:
 			ImGui::Text("Texture Count : %d", mModel->GetTextureCount());
 			ImGui::Text("Mesh Count : %d", mModel->GetNumMeshes());
 
+			ImGui::DragFloat3("Directional Light", &mDirectionalLight.x, -1.0f, 1.0f);
+
 			ImGui::End();
 		}
 	}
@@ -134,6 +136,7 @@ private:
 	std::unique_ptr<Model> mLightModel;
 	std::unique_ptr<Shader> mLightShader;
 	glm::vec3 mLightPos;
+	glm::vec3 mDirectionalLight;
 
 	std::unique_ptr<Cubemap> mCubemap;
 	std::unique_ptr<Shader> mCubemapShader;
@@ -142,7 +145,4 @@ private:
 	glm::mat4 mModelMat;
 	glm::mat4 mView;
 	glm::mat4 mProj;
-
-	// light
-
 };

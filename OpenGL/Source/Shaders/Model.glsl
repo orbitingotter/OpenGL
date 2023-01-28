@@ -31,6 +31,7 @@ in vec2 vTexCoords;
 
 uniform vec3 uLightPos;
 uniform vec3 uCameraPos;
+uniform vec3 uDirectionalLight;
 layout (binding = 0) uniform sampler2D uTextureDiffuse0;
 layout (binding = 1) uniform sampler2D uTextureSpecular0;
 layout (binding = 2) uniform sampler2D uTextureNormal0;
@@ -42,8 +43,8 @@ void main()
 {
     // Material Constants
     vec3 materialColor = vec3(1.0, 1.0, 1.0);
-    float diffuseStrength = 1.0f;
-    float specularStrength = 1.0f;
+    float diffuseStrength = 0.8f;
+    float specularStrength = 0.8f;
     float specularPower  = 32;
     float a =  0.0075f, b = 0.045f, c = 1.0f;
 
@@ -56,12 +57,17 @@ void main()
     float attentuation = 1 / (a * pow(x,2) + b * x + c);
     vec3 reflectDir = reflect(-lightDir, vNormal);
 
-    ambient = 0.7f;
+    // point light
+    ambient = 0.5f;
     diffuse = diffuseStrength * attentuation * max(dot(normalize(vNormal), lightDir), 0.0);
     specular = specularStrength * attentuation * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);
 
-   // if(texture(uTextureDiffuse0, vTexCoords).a < 0.1)
-     //   discard;
+    // directional light
+    lightDir = normalize(-uDirectionalLight);
+    reflectDir = reflect(-lightDir, vNormal);
+    diffuse += diffuseStrength * max(dot(normalize(vNormal), lightDir), 0.0);
+    specular += specularStrength * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);
+
 
     vec3 ambientColor =  ambient * texture(uTextureDiffuse0, vTexCoords).rgb;
     vec3 diffuseColor =  diffuse * texture(uTextureDiffuse0, vTexCoords).rgb;
