@@ -12,9 +12,10 @@ and used for testing various graphics / rendering techniques such as -
   - Meshes
   - Materials
   - Textures
-- Culling (Frustum, Occlusion)*
+- Cube Maps (Skybox)
+- Shadow Mapping
 - Normal Mapping*
-- Cube Maps (Skybox)*
+- Culling (Frustum, Occlusion)*
 - Scene Graph*
 - Deferred Rendering*
 - PBR*
@@ -23,8 +24,9 @@ and used for testing various graphics / rendering techniques such as -
 
 ---
 ### Screenshots
-![SponzaScreenshot](https://user-images.githubusercontent.com/112700146/211896625-0da1e315-d9cb-4a74-b601-f62a1029daec.jpg)
+![SponzaScreenshot](https://user-images.githubusercontent.com/112700146/215332941-91b1b174-3359-4278-9e50-f30f53f44d75.jpg)
 
+https://user-images.githubusercontent.com/112700146/215332871-2a3dcda7-a3c7-403e-adb8-97fcd09efb99.mp4
 
 https://user-images.githubusercontent.com/112700146/215154063-502dbf6d-d4e9-47af-846f-cc3451e8e226.mp4
 
@@ -43,16 +45,23 @@ git clone https://github.com/orbitingotter/OpenGL.git
     - [Sponza Scene](https://casual-effects.com/g3d/data10/index.html#mesh8)
 
 3. Extract and place it in OpenGL/Resources/Models
-4. Set your default test (recommened ModelTest) in main (App.cpp)
+4. Set your default test (recommened ShadowTest) in main (App.cpp)
 ```cpp
-Sandbox* scene = new ModelTest();
+Sandbox* scene = new ShadowTest();
 ```
-and make sure correct path is loaded in (ModelTest.h)
+and make sure correct path is loaded
 ```cpp
 mModel = std::make_unique<Model>("Resources/Models/sponza/sponza.obj");
 ```
 
 5. Build and run.
+
+---
+### Controls
+*Mouse* - Look Around\
+*Shift* - Down\
+*Space* - Up\
+*C* - Switch between Free Roam and Selection
 
 ---
 ### Dependencies
