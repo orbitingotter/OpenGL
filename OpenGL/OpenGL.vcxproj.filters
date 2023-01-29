@@ -502,6 +502,7 @@
     <None Include="Source\Shaders\Model.glsl" />
     <None Include="Source\Shaders\DepthTest.glsl" />
     <None Include="Source\Shaders\Cubemap.glsl" />
+    <None Include="Source\Shaders\ShadowMap.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Graphics\VertexBuffer.h">
@@ -1444,6 +1445,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Cubemap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tests\ShadowTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,6 +19,7 @@ private:
 public:
 	void SetUniform(const std::string& name, float v0, float v1, float v2, float v3);
 	void SetUniform(const std::string& name, int value);
+	void SetUniform(const std::string& name, float value);
 	void SetUniform(const std::string& name, const glm::vec3& vector);
 	void SetUniform(const std::string& name, const glm::mat4& matrix);
 

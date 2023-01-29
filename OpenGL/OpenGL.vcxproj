@@ -287,6 +287,7 @@
     <None Include="Source\Shaders\LightingMap.glsl" />
     <None Include="Source\Shaders\Model.glsl" />
     <None Include="Source\Shaders\Phong.glsl" />
+    <None Include="Source\Shaders\ShadowMap.glsl" />
     <None Include="Source\Shaders\SolidBasic.glsl" />
     <None Include="Source\Shaders\Texture.glsl" />
     <None Include="Source\Vendor\glm\detail\func_common.inl" />
@@ -447,6 +448,7 @@
     <ClInclude Include="Source\Tests\LightingMapTest.h" />
     <ClInclude Include="Source\Tests\ModelTest.h" />
     <ClInclude Include="Source\Tests\PhongTest.h" />
+    <ClInclude Include="Source\Tests\ShadowTest.h" />
     <ClInclude Include="Source\Tests\StencilTest.h" />
     <ClInclude Include="Source\Vendor\glm\common.hpp" />
     <ClInclude Include="Source\Vendor\glm\detail\compute_common.hpp" />

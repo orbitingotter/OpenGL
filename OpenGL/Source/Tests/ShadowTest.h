@@ -10,10 +10,10 @@
 #include <memory>
 
 
-class CubemapTest : public Sandbox
+class ShadowTest : public Sandbox
 {
 public:
-	CubemapTest()
+	ShadowTest()
 	{
 		mShader = std::make_unique<Shader>("Source/Shaders/Model.glsl");
 		float start = glfwGetTime();
@@ -42,9 +42,39 @@ public:
 		mCubemap = std::make_unique<Cubemap>(facePaths);
 		mCubemapShader = std::make_unique<Shader>("Source/Shaders/Cubemap.glsl");
 
+
+		// shadow map
+		glGenFramebuffers(1, &shadowMapFBO);
+
+		glGenTextures(1, &shadowMapTexture);
+		glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowWidth, shadowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		float clampColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMapTexture, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			std::cout << "Shadow FBO Error\n";
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		smProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 1000.0f);
+		smLightView = glm::lookAt(50.0f * glm::normalize(mDirectionalLight), camera.GetPosition(), glm::vec3(0.0f, 1.0f, 0.0f));
+		smFinalProjection = smProjection * smLightView;
+
+		shadowMapShader = std::make_unique<Shader>("Source/Shaders/ShadowMap.glsl");
 	}
 
-	~CubemapTest() {}
+	~ShadowTest() {}
 
 	void OnUpdate() override
 	{
@@ -72,6 +102,11 @@ public:
 		mCubemapShader->SetUniform("uView", glm::mat4(glm::mat3(mView)));
 		mCubemapShader->SetUniform("uProj", mProj);
 
+		smProjection = glm::ortho(-ortho, ortho, -ortho, ortho, 0.1f, 100.0f);
+		smLightView = glm::lookAt(50.0f * -glm::normalize(mDirectionalLight), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		smFinalProjection = smProjection * smLightView;
+
+
 		if (window.IsKeyPressed(GLFW_KEY_ENTER))
 		{
 			window.Close();
@@ -82,12 +117,44 @@ public:
 	void OnRender() override
 	{
 		renderer.Clear(0.1f, 0.1f, 0.1f, 0.0f);
+		renderer.SetDepthTest(true);
 
+		//glEnable(GL_CULL_FACE);
+		//glCullFace(GL_BACK);
 		//glDepthFunc(GL_LESS);
+
+		shadowMapShader->Bind();
+		shadowMapShader->SetUniform("uSMProj", smFinalProjection);
+		shadowMapShader->SetUniform("uModel", mModelMat);
+
+		glViewport(0, 0, shadowWidth, shadowHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		renderer.Draw(*mModel, *shadowMapShader);
+		renderer.Draw(*mLightModel, *shadowMapShader);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		//glCullFace(GL_BACK);
+
+
+		glViewport(0, 0, window.GetWidth(), window.GetHeight());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
+
+		mShader->Bind();
+		mShader->SetUniform("uSMProj", smFinalProjection);
+		mShader->SetUniform("uSMTexture", 3);
+
 		renderer.Draw(*mModel, *mShader);
 		renderer.Draw(*mLightModel, *mLightShader);
 
 		glDepthFunc(GL_LEQUAL);
+		glDisable(GL_CULL_FACE);
 		renderer.Draw(*mCubemap, *mCubemapShader);
 	}
 
@@ -122,9 +189,10 @@ public:
 			ImGui::Text("Texture Count : %d", mModel->GetTextureCount());
 			ImGui::Text("Mesh Count : %d", mModel->GetNumMeshes());
 
-			ImGui::DragFloat3("Directional Light", &mDirectionalLight.x, -1.0f, 1.0f);
+			ImGui::DragFloat3("Directional Light", &mDirectionalLight.x, 0.05f);
+			ImGui::DragFloat("Ortho", &ortho, 1.0f, 5.0f, 500.0f);
 
-
+			ImGui::Image((ImTextureID)shadowMapTexture, ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 			ImGui::End();
 		}
 	}
@@ -145,4 +213,13 @@ private:
 	glm::mat4 mModelMat;
 	glm::mat4 mView;
 	glm::mat4 mProj;
+
+
+	// shadow mapping vars
+	const int shadowWidth = 4096, shadowHeight = 4096;
+	float ortho = 20.0f;
+	unsigned int shadowMapFBO;
+	unsigned int shadowMapTexture;
+	glm::mat4 smProjection, smLightView, smFinalProjection;
+	std::unique_ptr<Shader> shadowMapShader;
 };

@@ -10,11 +10,12 @@
 #include "Tests/StencilTest.h"
 #include "Tests/FrameBufTest.h"
 #include "Tests/CubemapTest.h"
+#include "Tests/ShadowTest.h"
 
 
 int main()
 {
-	Sandbox* scene = new CubemapTest();
+	Sandbox* scene = new ShadowTest();
 
 	scene->Run();
 
