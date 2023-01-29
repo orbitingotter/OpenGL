@@ -26,7 +26,7 @@ and used for testing various graphics / rendering techniques such as -
 ### Screenshots
 ![SponzaScreenshot](https://user-images.githubusercontent.com/112700146/215332941-91b1b174-3359-4278-9e50-f30f53f44d75.jpg)
 
-https://user-images.githubusercontent.com/112700146/215332871-2a3dcda7-a3c7-403e-adb8-97fcd09efb99.mp4
+https://user-images.githubusercontent.com/112700146/215334019-6ce7eca4-3d2c-42eb-b0a7-eef1e5db8960.mp4
 
 https://user-images.githubusercontent.com/112700146/215154063-502dbf6d-d4e9-47af-846f-cc3451e8e226.mp4
 
