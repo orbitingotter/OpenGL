@@ -503,6 +503,7 @@
     <None Include="Source\Shaders\DepthTest.glsl" />
     <None Include="Source\Shaders\Cubemap.glsl" />
     <None Include="Source\Shaders\ShadowMap.glsl" />
+    <None Include="Source\Shaders\Shadow.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Graphics\VertexBuffer.h">

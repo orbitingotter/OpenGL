@@ -9,10 +9,13 @@ uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProj;
 
+uniform mat4 uSMProj;
+
 
 out vec3 vNormal;
 out vec4 vWorldPos;
 out vec2 vTexCoords;
+out vec4 vFragPosLight;
 
 void main()
 {
@@ -21,6 +24,7 @@ void main()
     vNormal = normalize(mat3(transpose(inverse(uModel))) * aNormal);
     vWorldPos = uModel * aPosition;
     vTexCoords = aTexCoords;
+    vFragPosLight = uSMProj * uModel * aPosition;
 }
 
 #shader pixel
@@ -30,6 +34,7 @@ in vec3 vNormal;
 in vec4 vWorldPos;
 in vec2 vTexCoords;
 
+in vec4 vFragPosLight;
 
 uniform vec3 uLightPos;
 uniform vec3 uCameraPos;
@@ -38,8 +43,53 @@ layout (binding = 0) uniform sampler2D uTextureDiffuse0;
 layout (binding = 1) uniform sampler2D uTextureSpecular0;
 layout (binding = 2) uniform sampler2D uTextureNormal0;
 
+// shadow map
+layout (binding = 3) uniform sampler2D uSMTexture;
 
 out vec4 fragColor;
+
+
+// shadow test variables
+uniform bool uPcfEnabled;
+uniform bool uShadowEnabled;
+uniform int uSampleRange;
+
+
+float ShadowCalc(vec4 fragPosLight)
+{
+    vec3 projCoords = fragPosLight.xyz / fragPosLight.w;
+    projCoords = (projCoords * 0.5) + 0.5;
+
+    float closestDepth = texture(uSMTexture, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+
+    //float bias = max(0.005 * (1.0 - dot(normalize(vNormal), normalize(-uDirectionalLight))), 0.005);
+    float bias = 0.00;
+    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+
+    if(projCoords.z > 1.0)
+        shadow = 0.0;
+
+    // pcf filter
+    if(uPcfEnabled)
+    {
+        vec2 texelSize = 1.0 / textureSize(uSMTexture, 0);
+
+        const int loopRange = (uSampleRange - 1) / 2;
+
+        for(int x = -loopRange; x <= loopRange; x++)
+        {
+            for(int y = -loopRange; y <= loopRange; y++)
+            {
+                float pcfDepth = texture(uSMTexture, projCoords.xy + vec2(x, y) * texelSize).r;
+                shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+            }
+        }
+        shadow /= pow(uSampleRange,2);
+    }
+
+    return shadow;
+}
 
 void main()
 {
@@ -74,6 +124,11 @@ void main()
     vec3 diffuseColor =  diffuse * texture(uTextureDiffuse0, vTexCoords).rgb;
     vec3 specularColor = specular * texture(uTextureSpecular0, vTexCoords).rgb;
 
-    vec3 finalColor = (diffuseColor + specularColor  + ambientColor) * materialColor;
+    float shadow = 0.0f;
+    if(uShadowEnabled)
+        shadow = ShadowCalc(vFragPosLight);
+
+    vec3 finalColor = ((diffuseColor + specularColor) * (1.0 - shadow)  + ambientColor) * materialColor;
     fragColor = vec4(finalColor, 1.0);
+
 }

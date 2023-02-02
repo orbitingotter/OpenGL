@@ -9,6 +9,7 @@ Cubemap::Cubemap(const std::vector<std::string>& facesFilepath)
 	// setup cube positions
 	mPositions.reserve(3 * 8);
 	mIndices.reserve(6 * 6);
+
 	mPositions =
 	{
 		-1.0f, -1.0f, -1.0f,
@@ -18,17 +19,17 @@ Cubemap::Cubemap(const std::vector<std::string>& facesFilepath)
 		+1.0f, -1.0f, -1.0f,
 		+1.0f, -1.0f, +1.0f,
 		+1.0f, +1.0f, -1.0f,
-		+1.0f, +1.0f, +1.0f
+		+1.0f, +1.0f, +1.0f,
 	};
 
 	mIndices =
 	{
-		4,7,5,	7,4,6,
-		1,2,0,	2,1,3,
-		2,7,6,	7,2,3,
-		1,4,5,	1,0,4,
-		0,6,4,	6,0,2,
-		5,3,1,  3,5,7,
+		1,0,2,	2,3,1,
+		4,5,7,	7,6,4,
+		0,4,6,	6,2,0,
+		5,1,3,  3,7,5,
+		2,6,7,	7,3,2,
+		1,5,4,	1,4,0
 	};
 
 	mVAO = std::make_unique<VertexArray>();

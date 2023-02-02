@@ -15,7 +15,7 @@ class ShadowTest : public Sandbox
 public:
 	ShadowTest()
 	{
-		mShader = std::make_unique<Shader>("Source/Shaders/Model.glsl");
+		mShader = std::make_unique<Shader>("Source/Shaders/Shadow.glsl");
 		float start = glfwGetTime();
 		mModel = std::make_unique<Model>("Resources/Models/sponza/sponza.obj");
 		std::cout << "Model took " << glfwGetTime() - start << "s to load\n";
@@ -87,6 +87,10 @@ public:
 		mShader->SetUniform("uLightPos", mLightPos);
 		mShader->SetUniform("uDirectionalLight", mDirectionalLight);
 		mShader->SetUniform("uCameraPos", camera.GetPosition());
+		mShader->SetUniform("uPcfEnabled", pcfEnabled);
+		mShader->SetUniform("uShadowEnabled", shadowEnabled);
+		mShader->SetUniform("uSampleRange", sampleRange);
+
 
 		const float radius = 5.0f;
 		mLightPos.x = radius * sin(glfwGetTime());
@@ -101,6 +105,7 @@ public:
 		mCubemapShader->Bind();
 		mCubemapShader->SetUniform("uView", glm::mat4(glm::mat3(mView)));
 		mCubemapShader->SetUniform("uProj", mProj);
+
 
 		smProjection = glm::ortho(-ortho, ortho, -ortho, ortho, 0.1f, 100.0f);
 		smLightView = glm::lookAt(50.0f * -glm::normalize(mDirectionalLight), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -119,26 +124,26 @@ public:
 		renderer.Clear(0.1f, 0.1f, 0.1f, 0.0f);
 		renderer.SetDepthTest(true);
 
-		//glEnable(GL_CULL_FACE);
-		//glCullFace(GL_BACK);
-		//glDepthFunc(GL_LESS);
+		// shadow pass
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		glDepthFunc(GL_LESS);
+		glViewport(0, 0, shadowWidth, shadowHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
 		shadowMapShader->Bind();
 		shadowMapShader->SetUniform("uSMProj", smFinalProjection);
 		shadowMapShader->SetUniform("uModel", mModelMat);
 
-		glViewport(0, 0, shadowWidth, shadowHeight);
-		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
-		glClear(GL_DEPTH_BUFFER_BIT);
-
 		renderer.Draw(*mModel, *shadowMapShader);
+		shadowMapShader->SetUniform("uModel", glm::scale(glm::translate(glm::mat4(1.0f), mLightPos), glm::vec3(0.2f)));
 		renderer.Draw(*mLightModel, *shadowMapShader);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		//glCullFace(GL_BACK);
-
-
+		// normal render pass
+		glCullFace(GL_BACK);
 		glViewport(0, 0, window.GetWidth(), window.GetHeight());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -148,13 +153,12 @@ public:
 
 		mShader->Bind();
 		mShader->SetUniform("uSMProj", smFinalProjection);
-		mShader->SetUniform("uSMTexture", 3);
 
 		renderer.Draw(*mModel, *mShader);
 		renderer.Draw(*mLightModel, *mLightShader);
 
+		// cubemap render
 		glDepthFunc(GL_LEQUAL);
-		glDisable(GL_CULL_FACE);
 		renderer.Draw(*mCubemap, *mCubemapShader);
 	}
 
@@ -192,6 +196,12 @@ public:
 			ImGui::DragFloat3("Directional Light", &mDirectionalLight.x, 0.05f);
 			ImGui::DragFloat("Ortho", &ortho, 1.0f, 5.0f, 500.0f);
 
+
+			ImGui::Checkbox("Shadow enabled", &shadowEnabled);
+			ImGui::Checkbox("PCF enabled", &pcfEnabled);
+			ImGui::DragInt("Sample Range", &sampleRange, 2.0f, 1, 15);
+			ImGui::Text("Num Samples : %d", sampleRange * sampleRange);
+
 			ImGui::Image((ImTextureID)shadowMapTexture, ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 			ImGui::End();
 		}
@@ -222,4 +232,8 @@ private:
 	unsigned int shadowMapTexture;
 	glm::mat4 smProjection, smLightView, smFinalProjection;
 	std::unique_ptr<Shader> shadowMapShader;
+
+	bool pcfEnabled = true;
+	bool shadowEnabled = true;
+	int sampleRange = 5;
 };
