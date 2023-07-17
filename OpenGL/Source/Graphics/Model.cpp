@@ -65,6 +65,9 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		{
 			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
 		}
+		vertex.Tangent = glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+		vertex.Bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+
 		vertices.emplace_back(vertex);
 	}
 
@@ -93,7 +96,7 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		// specular
 		LoadMaterialTextures(textures, material, aiTextureType_SPECULAR, "Specular");
 		// normal
-		//LoadMaterialTextures(textures, material, aiTextureType_NORMALS, "Normal");
+		LoadMaterialTextures(textures, material, aiTextureType_NORMALS, "Normal");
 
 		//std::cout << textures.size() << std::endl;
 
@@ -104,13 +107,14 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	mTextureCount = mTextureCache.size();
 
 	mMeshes.emplace_back(vertices, indices, textures);
+
 }
 
 void Model::LoadMaterialTextures(std::vector<Texture2D>& textures, aiMaterial* mat, aiTextureType type, const std::string& typeName)
 {
-	std::string completeFilePath;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
+		std::string completeFilePath;
 		aiString relPath;
 		mat->GetTexture(type, i, &relPath);
 		completeFilePath = mDirectory + '/' + relPath.C_Str();

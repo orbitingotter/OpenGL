@@ -10,6 +10,7 @@ Camera::Camera()
 	mWorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	mUpDir = glm::vec3(0.0f, 1.0f, 0.0f);
 
+
 	mSpeed = 0.0f;
 	mSpeedSensitivity = 12.0f;
 	mMouseSensitivity = 0.2f;

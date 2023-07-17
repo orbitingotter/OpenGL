@@ -286,6 +286,7 @@
     <None Include="Source\Shaders\DepthTest.glsl" />
     <None Include="Source\Shaders\LightingMap.glsl" />
     <None Include="Source\Shaders\Model.glsl" />
+    <None Include="Source\Shaders\NormalMap.glsl" />
     <None Include="Source\Shaders\Phong.glsl" />
     <None Include="Source\Shaders\Shadow.glsl" />
     <None Include="Source\Shaders\ShadowMap.glsl" />
@@ -448,6 +449,7 @@
     <ClInclude Include="Source\Tests\FrameBufTest.h" />
     <ClInclude Include="Source\Tests\LightingMapTest.h" />
     <ClInclude Include="Source\Tests\ModelTest.h" />
+    <ClInclude Include="Source\Tests\NormalMappingTest.h" />
     <ClInclude Include="Source\Tests\PhongTest.h" />
     <ClInclude Include="Source\Tests\ShadowTest.h" />
     <ClInclude Include="Source\Tests\StencilTest.h" />

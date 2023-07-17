@@ -10,6 +10,8 @@ struct Vertex
 	glm::vec3 Position;
 	glm::vec3 Normal;
 	glm::vec2 TexCoords;
+	glm::vec3 Tangent;
+	glm::vec3 Bitangent;
 };
 
 struct Material
@@ -24,6 +26,7 @@ public:
 	~Mesh();
 
 	void BindTextures(Shader& shader);
+	void UnbindTextures();
 	inline void Bind() const { mVAO.Bind(); }
 	inline const unsigned int GetIndexCount() const { return mIBO.GetCount(); }
 

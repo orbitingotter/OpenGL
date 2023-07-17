@@ -20,7 +20,6 @@ const std::string spec = "uTextureSpecular0";
 
 void Mesh::BindTextures(Shader& shader)
 {
-	/*
 	unsigned int diffuseN = 0;
 	unsigned int specularN = 0;
 	unsigned int normalN = 0;
@@ -32,17 +31,41 @@ void Mesh::BindTextures(Shader& shader)
 		std::string name = mTextures[i].GetType();
 		int number = 0;
 		if (name == "Diffuse")
-			number = diffuseN++;
+		{
+			//number = diffuseN++;
+
+			//finalUniformName += name + std::to_string(number);
+			mTextures[i].Bind(0);
+			//shader.SetUniform(finalUniformName, 0);
+
+		}
 		else if (name == "Specular")
-			number = specularN++;
+		{
+			//number = specularN++;
 
-		finalUniformName += name + std::to_string(number);
+			//finalUniformName += name + std::to_string(number);
+			mTextures[i].Bind(1);
+			//shader.SetUniform(finalUniformName, (int)1);
 
-		mTextures[i].Bind(i);
-		shader.SetUniform(finalUniformName, i);
+		}
+		else if (name == "Normal")
+		{
+			//number = normalN++;
+
+			//finalUniformName += name + std::to_string(number);
+			mTextures[i].Bind(2);
+			//shader.SetUniform(finalUniformName, (int)2);
+
+		}
+
+
+		//finalUniformName += name + std::to_string(number);
+		//
+		//mTextures[i].Bind(i);
+		//shader.SetUniform(finalUniformName, (int)i);
 	}
-	*/
 
+	/*
 	// same order as loaded
 	if (mTextures.size() >= 1)
 	{
@@ -56,19 +79,29 @@ void Mesh::BindTextures(Shader& shader)
 	}
 	if (mTextures.size() >= 3)
 	{
-		//mTextures[2].Bind(2);
+		mTextures[2].Bind(2);
 		//shader.SetUniform("uTextureNormal0", 2);
+	}
+	*/
+}
+
+void Mesh::UnbindTextures()
+{
+	for (unsigned int i = 0; i < mTextures.size(); i++)
+	{
+		mTextures[i].Unbind();
 	}
 }
 
-
 void Mesh::SetupMesh()
 {
-
 	BufferLayout layout;
 	layout.Push<float>(3);	// position
 	layout.Push<float>(3);	// normal
 	layout.Push<float>(2);	// texture coordinates
+	layout.Push<float>(3);	// tangent
+	layout.Push<float>(3);	// bitangent
+
 
 	mVAO.AddBuffer(mVBO, mIBO, layout);
 

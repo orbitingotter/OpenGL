@@ -14,7 +14,7 @@ and used for testing various graphics / rendering techniques such as -
   - Textures
 - Cube Maps (Skybox)
 - Shadow Mapping
-- Normal Mapping*
+- Normal Mapping
 - Culling (Frustum, Occlusion)*
 - Scene Graph*
 - Deferred Rendering*
