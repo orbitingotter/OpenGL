@@ -11,15 +11,16 @@ layout (location = 4) in vec3 aBitangent;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProj;
-
 uniform mat4 uSMProj;
 
-
-out vec3 vNormal;
-out vec4 vWorldPos;
-out vec2 vTexCoords;
-out vec4 vFragPosLight;
-out mat3 vTBN;
+out VS_OUT
+{
+    vec3 vNormal;
+    vec4 vWorldPos;
+    vec2 vTexCoords;
+    vec4 vFragPosLight;
+    mat3 vTBN;
+}vsOut;
 
 void main()
 {
@@ -31,25 +32,27 @@ void main()
     vec3 B = normalize(modelVector * aBitangent);
     vec3 N = normalize(modelVector * aNormal);
 
-    vTBN = mat3(T, B, N);
+    vsOut.vTBN = mat3(T, B, N);
 
-
-    vNormal = normalize(mat3(transpose(inverse(uModel))) * aNormal);
-    vWorldPos = uModel * aPosition;
-    vTexCoords = aTexCoords;
-    vFragPosLight = uSMProj * uModel * aPosition;
+    vsOut.vNormal = normalize(mat3(transpose(inverse(uModel))) * aNormal);
+    vsOut.vWorldPos = uModel * aPosition;
+    vsOut.vTexCoords = aTexCoords;
+    vsOut.vFragPosLight = uSMProj * uModel * aPosition;
 }
 
 #shader pixel
 #version 450 core
 
-in vec3 vNormal;
-in vec4 vWorldPos;
-in vec2 vTexCoords;
-in vec4 vFragPosLight;
-in mat3 vTBN;
+in VS_OUT
+{
+    vec3 vNormal;
+    vec4 vWorldPos;
+    vec2 vTexCoords;
+    vec4 vFragPosLight;
+    mat3 vTBN;
+}fsIn;
 
-uniform vec3 uLightPos;
+
 uniform vec3 uCameraPos;
 uniform vec3 uDirectionalLight;
 
@@ -62,7 +65,6 @@ layout (binding = 3) uniform sampler2D uSMTexture;
 
 out vec4 fragColor;
 
-
 // shadow test variables
 uniform bool uPcfEnabled;
 uniform bool uShadowEnabled;
@@ -71,6 +73,57 @@ uniform int uSampleRange;
 // normal map test variable
 uniform bool uNormalMappingEnabled;
 
+vec3 DirLightCalc(vec3 normalTS);
+float ShadowCalc(vec4 fragPosLight);
+
+
+void main()
+{
+    // normal mapping
+    vec3 normalTS = fsIn.vNormal;   // since varying is read-only
+    if(uNormalMappingEnabled)
+    {
+        normalTS = texture(uTextureNormal0, fsIn.vTexCoords).rgb;
+        normalTS = (normalTS * 2.0) - 1.0;
+        normalTS = normalize(fsIn.vTBN * normalTS);
+    }
+
+
+    fragColor = vec4(DirLightCalc(normalTS), 1.0);
+}
+
+
+// Light Calc Functions
+vec3 DirLightCalc(vec3 normalTS)
+{
+    // Constants
+    float diffuseStrength = 0.7f;
+    float specularStrength = 0.7f;
+    float specularPower  = 32;
+    float a =  0.01f, b = 0.045f, c = 1.0f;
+
+    float diffuse, specular, ambient;
+
+    // directional light
+    vec3 lightDir = normalize(-uDirectionalLight);
+    vec3 reflectDir = reflect(-lightDir, normalTS);
+    vec3 cameraDir = normalize(uCameraPos - fsIn.vWorldPos.xyz);
+
+    diffuse = diffuseStrength * max(dot(normalize(normalTS), lightDir), 0.0);
+    specular = specularStrength * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);
+    ambient = 0.4f;
+
+    float shadow = 0.0f;
+    if(uShadowEnabled)
+        shadow = ShadowCalc(fsIn.vFragPosLight);
+
+    vec3 ambientColor =  ambient * texture(uTextureDiffuse0, fsIn.vTexCoords).rgb;
+    vec3 diffuseColor =  diffuse * texture(uTextureDiffuse0, fsIn.vTexCoords).rgb;
+    vec3 specularColor = specular * texture(uTextureSpecular0, fsIn.vTexCoords).rgb;
+
+    vec3 finalColor = ((diffuseColor + specularColor) * (1.0 - shadow)  + ambientColor);
+    return finalColor;
+}
 
 float ShadowCalc(vec4 fragPosLight)
 {
@@ -106,55 +159,4 @@ float ShadowCalc(vec4 fragPosLight)
     }
 
     return shadow;
-}
-
-void main()
-{
-    // Material Constants
-    vec3 materialColor = vec3(1.0, 1.0, 1.0);
-    float diffuseStrength = 0.7f;
-    float specularStrength = 0.7f;
-    float specularPower  = 32;
-    float a =  0.0075f, b = 0.045f, c = 1.0f;
-
-    float diffuse, specular, ambient;
-
-    // normal mapping
-    vec3 newNormal = vNormal;   // since varying is read-only
-    if(uNormalMappingEnabled)
-    {
-        newNormal = texture(uTextureNormal0, vTexCoords).rgb;
-        newNormal = (newNormal * 2.0) - 1.0;
-        newNormal = normalize(vTBN * newNormal);
-    }
-
-    vec3 lightDir = normalize(uLightPos - vWorldPos.xyz);
-    vec3 cameraDir = normalize(uCameraPos - vWorldPos.xyz);
-    float x = length(uLightPos - vWorldPos.xyz);
-    float attentuation = 1 / (a * pow(x,2) + b * x + c);
-    vec3 reflectDir = reflect(-lightDir, newNormal);
-
-    // point light
-    ambient = 0.4f;
-    diffuse = diffuseStrength * attentuation * max(dot(normalize(newNormal), lightDir), 0.0);
-    specular = specularStrength * attentuation * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);
-
-    // directional light
-    lightDir = normalize(-uDirectionalLight);
-    reflectDir = reflect(-lightDir, newNormal);
-    diffuse += diffuseStrength * max(dot(normalize(newNormal), lightDir), 0.0);
-    specular += specularStrength * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);
-
-
-    vec3 ambientColor =  ambient * texture(uTextureDiffuse0, vTexCoords).rgb;
-    vec3 diffuseColor =  diffuse * texture(uTextureDiffuse0, vTexCoords).rgb;
-    vec3 specularColor = specular * texture(uTextureSpecular0, vTexCoords).rgb;
-
-    float shadow = 0.0f;
-    if(uShadowEnabled)
-        shadow = ShadowCalc(vFragPosLight);
-
-    vec3 finalColor = ((diffuseColor + specularColor) * (1.0 - shadow)  + ambientColor) * materialColor;
-    fragColor = vec4(finalColor, 1.0);
-
 }

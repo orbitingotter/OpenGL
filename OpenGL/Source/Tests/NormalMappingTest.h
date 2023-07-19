@@ -20,10 +20,7 @@ public:
 		mModel = std::make_unique<Model>("Resources/Models/sponza/sponza.obj");
 		std::cout << "Model took " << glfwGetTime() - start << "s to load\n";
 
-		mLightShader = std::make_unique<Shader>("Source/Shaders/SolidBasic.glsl");
-		mLightModel = std::make_unique<Model>("Resources/Models/cube.obj");
-		mLightPos = glm::vec3(0.0f, 0.0f, -2.0f);
-		mDirectionalLight = glm::vec3(0.0f, -1.0f, 2.0f);
+		mDirectionalLight = glm::vec3(-0.3f, -1.0f, -0.1f);
 
 		mModelMat = glm::scale(glm::mat4(1.0f), glm::vec3(0.01f));
 		mView = camera.GetViewMatrix();
@@ -67,7 +64,7 @@ public:
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		smProjection = glm::ortho(-35.0f	, 35.0f, -35.0f, 35.0f, 0.1f, 1000.0f);
+		smProjection = glm::ortho(-35.0f, 35.0f, -35.0f, 35.0f, 0.1f, 1000.0f);
 		smLightView = glm::lookAt(50.0f * glm::normalize(mDirectionalLight), camera.GetPosition(), glm::vec3(0.0f, 1.0f, 0.0f));
 		smFinalProjection = smProjection * smLightView;
 
@@ -84,7 +81,6 @@ public:
 		mShader->SetUniform("uModel", mModelMat);
 		mShader->SetUniform("uView", mView);
 		mShader->SetUniform("uProj", mProj);
-		mShader->SetUniform("uLightPos", mLightPos);
 		mShader->SetUniform("uDirectionalLight", mDirectionalLight);
 		mShader->SetUniform("uCameraPos", camera.GetPosition());
 		mShader->SetUniform("uPcfEnabled", pcfEnabled);
@@ -93,16 +89,6 @@ public:
 		mShader->SetUniform("uNormalMappingEnabled", normalMappingEnabled);
 
 
-
-		const float radius = 5.0f;
-		mLightPos.x = radius * sin(glfwGetTime());
-		mLightPos.z = radius * cos(glfwGetTime());
-		mLightPos.y = 0.0f;
-
-		mLightShader->Bind();
-		mLightShader->SetUniform("uModel", glm::scale(glm::translate(glm::mat4(1.0f), mLightPos), glm::vec3(0.2f)));
-		mLightShader->SetUniform("uView", mView);
-		mLightShader->SetUniform("uProj", mProj);
 
 		mCubemapShader->Bind();
 		mCubemapShader->SetUniform("uView", glm::mat4(glm::mat3(mView)));
@@ -139,8 +125,6 @@ public:
 		shadowMapShader->SetUniform("uModel", mModelMat);
 
 		renderer.Draw(*mModel, *shadowMapShader);
-		shadowMapShader->SetUniform("uModel", glm::scale(glm::translate(glm::mat4(1.0f), mLightPos), glm::vec3(0.2f)));
-		renderer.Draw(*mLightModel, *shadowMapShader);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -156,10 +140,7 @@ public:
 		mShader->Bind();
 		mShader->SetUniform("uSMProj", smFinalProjection);
 
-		glDisable(GL_CULL_FACE);
-
 		renderer.Draw(*mModel, *mShader);
-		renderer.Draw(*mLightModel, *mLightShader);
 
 		// cubemap
 		glDepthFunc(GL_LEQUAL);
@@ -219,16 +200,13 @@ private:
 	std::unique_ptr<Model> mModel;
 	std::unique_ptr<Shader> mShader;
 
-	std::unique_ptr<Model> mLightModel;
-	std::unique_ptr<Shader> mLightShader;
-	glm::vec3 mLightPos;
 	glm::vec3 mDirectionalLight;
 
 	std::unique_ptr<Cubemap> mCubemap;
 	std::unique_ptr<Shader> mCubemapShader;
 
 	glm::mat4 mModelMat;
-	glm::mat4 mView; 
+	glm::mat4 mView;
 	glm::mat4 mProj;
 
 
