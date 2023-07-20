@@ -68,7 +68,7 @@ static void SetDarkThemeImGui()
 class Sandbox
 {
 public:
-	Sandbox() : window("OpenGL App", 1600, 900), renderer(), delta(0.0f)
+	Sandbox() : window("OpenGL App", 1600, 900), renderer(window, camera), delta(0.0f)
 	{
 		// imgui initialization
 		IMGUI_CHECKVERSION();
@@ -122,8 +122,8 @@ public:
 
 protected:
 	Window window;
-	Renderer renderer;
 	Camera camera;
+	Renderer renderer;
 
 	float delta;
 };

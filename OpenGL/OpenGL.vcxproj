@@ -433,6 +433,7 @@
     <ClInclude Include="Source\Graphics\BufferLayout.h" />
     <ClInclude Include="Source\Graphics\Camera.h" />
     <ClInclude Include="Source\Graphics\Cubemap.h" />
+    <ClInclude Include="Source\Graphics\DirectionalLight.h" />
     <ClInclude Include="Source\Graphics\Framebuffer.h" />
     <ClInclude Include="Source\Graphics\IndexBuffer.h" />
     <ClInclude Include="Source\Graphics\Mesh.h" />

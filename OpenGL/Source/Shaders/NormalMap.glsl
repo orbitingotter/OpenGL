@@ -55,6 +55,7 @@ in VS_OUT
 
 uniform vec3 uCameraPos;
 uniform vec3 uDirectionalLight;
+uniform vec3 uDirectionalColor;
 
 layout (binding = 0) uniform sampler2D uTextureDiffuse0;
 layout (binding = 1) uniform sampler2D uTextureSpecular0;
@@ -117,9 +118,9 @@ vec3 DirLightCalc(vec3 normalTS)
     if(uShadowEnabled)
         shadow = ShadowCalc(fsIn.vFragPosLight);
 
-    vec3 ambientColor =  ambient * texture(uTextureDiffuse0, fsIn.vTexCoords).rgb;
-    vec3 diffuseColor =  diffuse * texture(uTextureDiffuse0, fsIn.vTexCoords).rgb;
-    vec3 specularColor = specular * texture(uTextureSpecular0, fsIn.vTexCoords).rgb;
+    vec3 ambientColor =  ambient * texture(uTextureDiffuse0, fsIn.vTexCoords).rgb;// * uDirectionalColor;
+    vec3 diffuseColor =  diffuse * texture(uTextureDiffuse0, fsIn.vTexCoords).rgb * uDirectionalColor;
+    vec3 specularColor = specular * texture(uTextureSpecular0, fsIn.vTexCoords).rgb * uDirectionalColor;
 
     vec3 finalColor = ((diffuseColor + specularColor) * (1.0 - shadow)  + ambientColor);
     return finalColor;

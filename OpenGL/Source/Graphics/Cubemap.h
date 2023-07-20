@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Graphics/VertexArray.h"
-#include "Graphics\Shader.h"
+#include "Graphics/Shader.h"
 
 class Cubemap
 {

@@ -1455,5 +1455,8 @@
     <ClInclude Include="Source\Tests\NormalMappingTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
