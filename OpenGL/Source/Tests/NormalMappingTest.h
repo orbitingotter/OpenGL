@@ -70,9 +70,10 @@ public:
 		{
 			ImGui::Begin("Info", &testWindow);
 
-
 			if (ImGui::CollapsingHeader("Stats", ImGuiTreeNodeFlags_DefaultOpen))
 			{
+				ImGui::Indent(16.0f);
+
 				ImGui::Text("FPS : %.1f FPS | Delta : %.2f ms", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
 				static bool vsync = window.IsVSync();
 				ImGui::Checkbox("VSync", &vsync);
@@ -100,6 +101,8 @@ public:
 				ImGui::Text("Index Count : %d", mIndexCount);
 				ImGui::Text("Texture Count : %d", mTextureCount);
 				ImGui::Text("Mesh Count : %d", mMeshCount);
+
+				ImGui::Unindent();
 			}
 
 			ImGui::Separator();
@@ -107,16 +110,21 @@ public:
 
 			if (ImGui::CollapsingHeader("Render Configuration", ImGuiTreeNodeFlags_DefaultOpen))
 			{
+				ImGui::Indent(16.0f);
+
 				ImGui::Checkbox("Wireframe", &renderer.config.WireFrame);
 				ImGui::Checkbox("Shadow Mapping", &renderer.config.ShadowMapping);
 				ImGui::Checkbox("Normal Mapping", &renderer.config.NomalMapping);
-			}
 
+				ImGui::Unindent();
+			}
 
 			ImGui::Separator();
 
 			if (ImGui::CollapsingHeader("Shadows", ImGuiTreeNodeFlags_DefaultOpen))
 			{
+				ImGui::Indent(16.0f);
+
 				Renderer::ShadowMapDesc& desc = renderer.GetShadowDescription();
 				ImGui::DragFloat3("Directional Light", &renderer.GetLight().direction.x, 0.05f);
 				ImGui::ColorEdit3("Directional Color", &renderer.GetLight().color.x);
@@ -126,7 +134,9 @@ public:
 				ImGui::Text("Num Samples : %d", desc.sampleRange * desc.sampleRange);
 				ImGui::Image((ImTextureID)desc.shadowMapTexture, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
 
+				ImGui::Unindent();
 			}
+
 			ImGui::Separator();
 
 
