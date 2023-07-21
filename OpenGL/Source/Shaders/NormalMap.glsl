@@ -13,13 +13,19 @@ uniform mat4 uView;
 uniform mat4 uProj;
 uniform mat4 uSMProj;
 
+
+uniform vec3 uCameraPos;
+uniform vec3 uDirectionalLight;
+
 out VS_OUT
 {
     vec3 vNormal;
-    vec4 vWorldPos;
     vec2 vTexCoords;
     vec4 vFragPosLight;
-    mat3 vTBN;
+
+    vec3 vWorldPosTS;
+    vec3 vCameraTS;
+    vec3 vLightTS;
 }vsOut;
 
 void main()
@@ -28,14 +34,24 @@ void main()
 
     mat3 modelVector = transpose(inverse(mat3(uModel)));
 
-    vec3 T = normalize(modelVector * aTangent);
-    vec3 B = normalize(modelVector * aBitangent);
-    vec3 N = normalize(modelVector * aNormal);
+    //vec3 T = normalize(modelVector * aTangent);
+    //vec3 B = normalize(modelVector * aBitangent);
+    //vec3 N = normalize(modelVector * aNormal);
 
-    vsOut.vTBN = mat3(T, B, N);
+    vec3 T = normalize(vec3(uModel * vec4(aTangent, 0.0)));
+    vec3 N = normalize(vec3(uModel * vec4(aNormal, 0.0)));
+    T = normalize(T - dot(T, N) * N);
+    vec3 B = cross(N, T);
+    //B = normalize(modelVector * aBitangent);
+
+
+    mat3 TBN = transpose(mat3(T, B, N)); // inverse of TBN - transform from world space to local tangent space
+
+    vsOut.vWorldPosTS = TBN * vec3(uModel * aPosition);
+    vsOut.vCameraTS = TBN * uCameraPos;
+    vsOut.vLightTS = TBN * uDirectionalLight;
 
     vsOut.vNormal = normalize(mat3(transpose(inverse(uModel))) * aNormal);
-    vsOut.vWorldPos = uModel * aPosition;
     vsOut.vTexCoords = aTexCoords;
     vsOut.vFragPosLight = uSMProj * uModel * aPosition;
 }
@@ -46,15 +62,15 @@ void main()
 in VS_OUT
 {
     vec3 vNormal;
-    vec4 vWorldPos;
     vec2 vTexCoords;
     vec4 vFragPosLight;
-    mat3 vTBN;
+
+    vec3 vWorldPosTS;
+    vec3 vCameraTS;
+    vec3 vLightTS;
 }fsIn;
 
 
-uniform vec3 uCameraPos;
-uniform vec3 uDirectionalLight;
 uniform vec3 uDirectionalColor;
 
 layout (binding = 0) uniform sampler2D uTextureDiffuse0;
@@ -81,14 +97,12 @@ float ShadowCalc(vec4 fragPosLight);
 void main()
 {
     // normal mapping
-    vec3 normalTS = fsIn.vNormal;   // since varying is read-only
+    vec3 normalTS = vec3(0, 0, 1.0);    // default normal in tangent space
     if(uNormalMappingEnabled)
     {
         normalTS = texture(uTextureNormal0, fsIn.vTexCoords).rgb;
         normalTS = (normalTS * 2.0) - 1.0;
-        normalTS = normalize(fsIn.vTBN * normalTS);
     }
-
 
     fragColor = vec4(DirLightCalc(normalTS), 1.0);
 }
@@ -106,9 +120,9 @@ vec3 DirLightCalc(vec3 normalTS)
     float diffuse, specular, ambient;
 
     // directional light
-    vec3 lightDir = normalize(-uDirectionalLight);
+    vec3 lightDir = normalize(-fsIn.vLightTS);
     vec3 reflectDir = reflect(-lightDir, normalTS);
-    vec3 cameraDir = normalize(uCameraPos - fsIn.vWorldPos.xyz);
+    vec3 cameraDir = normalize(fsIn.vCameraTS - fsIn.vWorldPosTS);
 
     diffuse = diffuseStrength * max(dot(normalize(normalTS), lightDir), 0.0);
     specular = specularStrength * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);
