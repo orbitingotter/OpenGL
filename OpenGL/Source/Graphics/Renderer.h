@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "Framebuffer.h"
 #include "Cubemap.h"
 
 #include "DirectionalLight.h"
@@ -54,8 +55,9 @@ public:
 
 		bool ShadowMapping = true;
 		bool NomalMapping = true;
-		bool ParallaxMapping = true;
+		bool ParallaxMapping = false;
 
+		bool GammaCorrection = true;
 	};
 
 
@@ -87,4 +89,9 @@ private:
 	// shadows
 	DirectionalLight mDirLight;
 	ShadowMapDesc mShadowDescription;
+
+	// post process
+	std::unique_ptr<Model> mPostProcessQuad;
+	std::unique_ptr<Framebuffer> mFrameBuf;
+	std::unique_ptr<Shader> mDefaultPostProcessShader;
 };

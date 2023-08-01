@@ -57,6 +57,10 @@ void Mesh::BindTextures(Shader& shader)
 			//shader.SetUniform(finalUniformName, (int)2);
 
 		}
+		else if (name == "Displacement")
+		{
+			mTextures[i].Bind(3);
+		}
 
 
 		//finalUniformName += name + std::to_string(number);

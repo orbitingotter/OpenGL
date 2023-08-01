@@ -288,6 +288,7 @@
     <None Include="Source\Shaders\Model.glsl" />
     <None Include="Source\Shaders\NormalMap.glsl" />
     <None Include="Source\Shaders\Phong.glsl" />
+    <None Include="Source\Shaders\PostProcess.glsl" />
     <None Include="Source\Shaders\Shadow.glsl" />
     <None Include="Source\Shaders\ShadowMap.glsl" />
     <None Include="Source\Shaders\SolidBasic.glsl" />

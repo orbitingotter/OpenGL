@@ -115,13 +115,16 @@ public:
 				ImGui::Checkbox("Wireframe", &renderer.config.WireFrame);
 				ImGui::Checkbox("Shadow Mapping", &renderer.config.ShadowMapping);
 				ImGui::Checkbox("Normal Mapping", &renderer.config.NomalMapping);
+				ImGui::Checkbox("Parallax Mapping", &renderer.config.ParallaxMapping);
+				ImGui::Checkbox("Gamma Correction", &renderer.config.GammaCorrection);
+
 
 				ImGui::Unindent();
 			}
 
 			ImGui::Separator();
 
-			if (ImGui::CollapsingHeader("Shadows", ImGuiTreeNodeFlags_DefaultOpen))
+			if (ImGui::CollapsingHeader("Lighting", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				ImGui::Indent(16.0f);
 

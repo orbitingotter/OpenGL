@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include "stb_image/stb_image.h"
 
-Texture2D::Texture2D(const std::string& filePath, const std::string& type)
+Texture2D::Texture2D(const std::string& filePath, const std::string& type, bool gammaCorrection)
 	: mID(0), mFilePath(filePath), mType(type), mImageBuffer(nullptr), mWidth(0), mHeight(0), mChannels(0)
 {
 	stbi_set_flip_vertically_on_load(1);
@@ -20,8 +20,9 @@ Texture2D::Texture2D(const std::string& filePath, const std::string& type)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, 16.0f);
 
+	int internalFormat = gammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mImageBuffer);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, mImageBuffer);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// unbind to later bind specific slot

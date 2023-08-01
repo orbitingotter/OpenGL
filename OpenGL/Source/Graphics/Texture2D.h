@@ -3,7 +3,7 @@
 class Texture2D
 {
 public:
-	Texture2D(const std::string& filePath, const std::string& type = "");
+	Texture2D(const std::string& filePath, const std::string& type = "", bool gammaCorrection = false);
 	~Texture2D();
 
 	void Bind(unsigned int slot = 0) const;

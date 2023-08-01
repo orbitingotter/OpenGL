@@ -71,45 +71,92 @@ in VS_OUT
 }fsIn;
 
 
-uniform vec3 uDirectionalColor;
 
 layout (binding = 0) uniform sampler2D uTextureDiffuse0;
 layout (binding = 1) uniform sampler2D uTextureSpecular0;
 layout (binding = 2) uniform sampler2D uTextureNormal0;
+layout (binding = 3) uniform sampler2D uTextureDisplacement0;
+
 
 // shadow map
-layout (binding = 3) uniform sampler2D uSMTexture;
+layout (binding = 4) uniform sampler2D uSMTexture;
 
 out vec4 fragColor;
 
-// shadow test variables
+uniform vec3 uDirectionalColor;
+
+// test variables
 uniform bool uPcfEnabled;
 uniform bool uShadowEnabled;
 uniform int uSampleRange;
 
-// normal map test variable
 uniform bool uNormalMappingEnabled;
+uniform bool uParallaxMappingEnabled;
 
-vec3 DirLightCalc(vec3 normalTS);
+vec3 DirLightCalc(vec3 normalTS, vec2 newTexCoords);
 float ShadowCalc(vec4 fragPosLight);
-
+vec2 ParallaxCalc(vec2 oldTexCoords, vec3 viewDir);
 
 void main()
 {
+    // parallax mapping
+    vec2 newTexCoords = fsIn.vTexCoords;
+    if(uParallaxMappingEnabled)
+    {
+        newTexCoords = ParallaxCalc(fsIn.vTexCoords, normalize(fsIn.vCameraTS - fsIn.vWorldPosTS));
+    }
+
     // normal mapping
     vec3 normalTS = vec3(0, 0, 1.0);    // default normal in tangent space
     if(uNormalMappingEnabled)
     {
-        normalTS = texture(uTextureNormal0, fsIn.vTexCoords).rgb;
+        normalTS = texture(uTextureNormal0, newTexCoords).rgb;
         normalTS = (normalTS * 2.0) - 1.0;
     }
 
-    fragColor = vec4(DirLightCalc(normalTS), 1.0);
+    fragColor = vec4(DirLightCalc(normalTS, newTexCoords), 1.0);
+}
+
+// Parallax Calc - Parallax Mapping - returns new tex coords
+vec2 ParallaxCalc(vec2 texCoords, vec3 viewDir)
+{
+    const float minLayers = 8;
+    const float maxLayers = 32;
+    float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));
+
+    float layerDepth = 1.0 / numLayers;
+    float currentLayerDepth = 0.0;
+    vec2 P = viewDir.xy /viewDir.z * 0.005;
+    vec2 deltaTexCoords = P / numLayers;
+
+    vec2  currentTexCoords = texCoords;
+    float currentDepthMapValue = texture(uTextureDisplacement0, currentTexCoords).r;
+
+    while(currentLayerDepth < currentDepthMapValue)
+    {
+        currentTexCoords -= deltaTexCoords;
+        currentDepthMapValue = texture(uTextureDisplacement0, currentTexCoords).r;
+        currentLayerDepth += layerDepth;
+    }
+
+    // parallax occulsion
+    // get texture coordinates before collision (reverse operations)
+    vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
+
+    // get depth after and before collision for linear interpolation
+    float afterDepth  = currentDepthMapValue - currentLayerDepth;
+    float beforeDepth = texture(uTextureDisplacement0, prevTexCoords).r - currentLayerDepth + layerDepth;
+
+    // interpolation of texture coordinates
+    float weight = afterDepth / (afterDepth - beforeDepth);
+    vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+
+    return finalTexCoords;
 }
 
 
-// Light Calc Functions
-vec3 DirLightCalc(vec3 normalTS)
+// Light Calc - Phong Model - returns color of fragment
+vec3 DirLightCalc(vec3 normalTS, vec2 newTexCoords)
 {
     // Constants
     float diffuseStrength = 0.7f;
@@ -132,14 +179,15 @@ vec3 DirLightCalc(vec3 normalTS)
     if(uShadowEnabled)
         shadow = ShadowCalc(fsIn.vFragPosLight);
 
-    vec3 ambientColor =  ambient * texture(uTextureDiffuse0, fsIn.vTexCoords).rgb;// * uDirectionalColor;
-    vec3 diffuseColor =  diffuse * texture(uTextureDiffuse0, fsIn.vTexCoords).rgb * uDirectionalColor;
-    vec3 specularColor = specular * texture(uTextureSpecular0, fsIn.vTexCoords).rgb * uDirectionalColor;
+    vec3 ambientColor =  ambient * texture(uTextureDiffuse0, newTexCoords).rgb;// * uDirectionalColor;
+    vec3 diffuseColor =  diffuse * texture(uTextureDiffuse0, newTexCoords).rgb * uDirectionalColor;
+    vec3 specularColor = specular * texture(uTextureSpecular0, newTexCoords).rgb * uDirectionalColor;
 
     vec3 finalColor = ((diffuseColor + specularColor) * (1.0 - shadow)  + ambientColor);
     return finalColor;
 }
 
+// Shadow Calc - Shadow Mapping - returns value between 0.0 to 1.0 denoting amount of shadow
 float ShadowCalc(vec4 fragPosLight)
 {
     vec3 projCoords = fragPosLight.xyz / fragPosLight.w;

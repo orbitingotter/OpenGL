@@ -89,7 +89,8 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		textures.reserve(
 			material->GetTextureCount(aiTextureType_DIFFUSE) +
 			material->GetTextureCount(aiTextureType_SPECULAR) +
-			material->GetTextureCount(aiTextureType_NORMALS));
+			material->GetTextureCount(aiTextureType_NORMALS) +
+			material->GetTextureCount(aiTextureType_HEIGHT));
 
 		// diffuse
 		LoadMaterialTextures(textures, material, aiTextureType_DIFFUSE, "Diffuse");
@@ -97,6 +98,9 @@ void Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		LoadMaterialTextures(textures, material, aiTextureType_SPECULAR, "Specular");
 		// normal
 		LoadMaterialTextures(textures, material, aiTextureType_NORMALS, "Normal");
+		// displacement
+		LoadMaterialTextures(textures, material, aiTextureType_HEIGHT, "Displacement");
+
 
 		//std::cout << textures.size() << std::endl;
 
@@ -138,14 +142,16 @@ void Model::LoadMaterialTextures(std::vector<Texture2D>& textures, aiMaterial* m
 		}
 		*/
 
-
 		if (mTextureCache.find(completeFilePath) != mTextureCache.end())
 		{
 			textures.emplace_back(mTextureCache.at(completeFilePath));
 			continue;
 		}
+		if(type == aiTextureType_DIFFUSE)
+			mTextureCache.emplace(std::make_pair(completeFilePath, std::move(Texture2D(completeFilePath, typeName, true))));
+		else
+			mTextureCache.emplace(std::make_pair(completeFilePath, std::move(Texture2D(completeFilePath, typeName))));
 
-		mTextureCache.emplace(std::make_pair(completeFilePath, std::move(Texture2D(completeFilePath, typeName))));
 		textures.emplace_back(mTextureCache.at(completeFilePath));
 	}
 }

@@ -94,7 +94,11 @@ Renderer::Renderer(Window& window, Camera& camera)
 
 	mDefaultShader = std::make_unique<Shader>("Source/Shaders/NormalMap.glsl");
 	mDefaultShadowShader = std::make_unique<Shader>("Source/Shaders/ShadowMap.glsl");
+	mDefaultPostProcessShader = std::make_unique<Shader>("Source/Shaders/PostProcess.glsl");
 	mDefaultCubemapShader = std::make_unique<Shader>("Source/Shaders/Cubemap.glsl");
+
+	mPostProcessQuad = std::make_unique<Model>("Resources/Models/quad.obj");
+	mFrameBuf = std::make_unique<Framebuffer>(mWindowRef.GetWidth(), mWindowRef.GetHeight());
 
 	mDefaultView = mCameraRef.GetViewMatrix();
 	mDefaultProjection = glm::perspective(glm::radians(60.0f), mWindowRef.GetAspectRatio(), 0.1f, 1000.0f);
@@ -176,6 +180,7 @@ void Renderer::Draw(Model& model, Shader& shader)
 		meshes[i].BindTextures(shader);
 		meshes[i].Bind();
 		glDrawElements(GL_TRIANGLES, meshes[i].GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+		meshes[i].UnbindTextures();
 	}
 }
 
@@ -198,6 +203,7 @@ void Renderer::DrawSubmitted()
 	UpdateConfiguration();
 
 	// SHADOW PASS
+	SetDepthTest(true);
 	if (config.ShadowMapping)
 	{
 		glEnable(GL_CULL_FACE);
@@ -223,15 +229,9 @@ void Renderer::DrawSubmitted()
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// NORMAL RENDER PASS
+	// GEOMETRY PASS
 
-	glCullFace(GL_BACK);
-	glViewport(0, 0, mWindowRef.GetWidth(), mWindowRef.GetHeight());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, mShadowDescription.shadowMapTexture);
+	mFrameBuf->Bind();
 
 	mDefaultView = mCameraRef.GetViewMatrix();
 	mDefaultShader->Bind();
@@ -246,6 +246,17 @@ void Renderer::DrawSubmitted()
 	mDefaultShader->SetUniform("uSampleRange", mShadowDescription.sampleRange);
 	mDefaultShader->SetUniform("uShadowEnabled", config.ShadowMapping);
 	mDefaultShader->SetUniform("uNormalMappingEnabled", config.NomalMapping);
+	mDefaultShader->SetUniform("uParallaxMappingEnabled", config.ParallaxMapping);
+
+	glViewport(0, 0, mWindowRef.GetWidth(), mWindowRef.GetHeight());
+
+
+	glCullFace(GL_BACK);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, mShadowDescription.shadowMapTexture);
 
 	for (int i = 0; i < mModelList.size(); i++)
 	{
@@ -253,7 +264,7 @@ void Renderer::DrawSubmitted()
 		Draw(*mModelList[i], *mDefaultShader);
 	}
 
-	// CUBEMAP
+	// cubemap
 	mDefaultCubemapShader->Bind();
 	mDefaultCubemapShader->SetUniform("uView", glm::mat4(glm::mat3(mDefaultView)));
 	mDefaultCubemapShader->SetUniform("uProj", mDefaultProjection);
@@ -261,6 +272,18 @@ void Renderer::DrawSubmitted()
 	glDepthFunc(GL_LEQUAL);
 	Draw(*mCubemap, *mDefaultCubemapShader);
 
+	mFrameBuf->Unbind();
+
+	// POST PROCESS RENDER PASS
+	glCullFace(GL_FRONT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	mFrameBuf->BindColorAttachment(0);
+	mDefaultPostProcessShader->Bind();
+	mDefaultPostProcessShader->SetUniform("uGamma", config.GammaCorrection);
+
+	Draw(*mPostProcessQuad, *mDefaultPostProcessShader);
 
 }
 

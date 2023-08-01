@@ -10,7 +10,7 @@ out vec3 vTexCoords;
 
 void main()
 {
-    vec4 pos = (uProj * uView) * aPosition;
+    vec4 pos = uProj * uView * aPosition;
     gl_Position = pos.xyww;
 
     vTexCoords = vec3(aPosition.x, aPosition.y, aPosition.z);
