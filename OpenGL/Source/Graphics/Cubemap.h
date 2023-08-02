@@ -6,7 +6,7 @@
 class Cubemap
 {
 public:
-	Cubemap(const std::vector<std::string>& facesFilepath);
+	Cubemap(const std::vector<std::string>& facesFilepath, bool gammaCorrection = false);
 	~Cubemap();
 
 	void Bind();

@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include "Vendor/stb_image/stb_image.h"
 
-Cubemap::Cubemap(const std::vector<std::string>& facesFilepath)
+Cubemap::Cubemap(const std::vector<std::string>& facesFilepath, bool gammaCorrection)
 {
 	// setup cube positions
 	mPositions.reserve(3 * 8);
@@ -44,6 +44,8 @@ Cubemap::Cubemap(const std::vector<std::string>& facesFilepath)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, mID);
 
 	int width, height, channels;
+	int internalFormat = gammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
+
 	for (unsigned int i = 0; i < facesFilepath.size(); i++)
 	{
 		stbi_set_flip_vertically_on_load(false);
@@ -51,7 +53,7 @@ Cubemap::Cubemap(const std::vector<std::string>& facesFilepath)
 
 		if (data)
 		{
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_SRGB_ALPHA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			stbi_image_free(data);
 		}
 		else
