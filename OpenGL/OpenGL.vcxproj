@@ -451,7 +451,7 @@
     <ClInclude Include="Source\Tests\FrameBufTest.h" />
     <ClInclude Include="Source\Tests\LightingMapTest.h" />
     <ClInclude Include="Source\Tests\ModelTest.h" />
-    <ClInclude Include="Source\Tests\NormalMappingTest.h" />
+    <ClInclude Include="Source\Tests\CurrentTest.h" />
     <ClInclude Include="Source\Tests\PhongTest.h" />
     <ClInclude Include="Source\Tests\ShadowTest.h" />
     <ClInclude Include="Source\Tests\StencilTest.h" />

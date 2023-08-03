@@ -108,7 +108,7 @@ Renderer::Renderer(Window& window, Camera& camera)
 
 void Renderer::AddSkybox(const std::vector<std::string>& filePaths)
 {
-	mCubemap = std::make_unique<Cubemap>(filePaths);
+	mCubemap = std::make_unique<Cubemap>(filePaths, true);
 }
 
 void Renderer::SetupLights()

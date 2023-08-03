@@ -11,12 +11,12 @@
 #include "Tests/FrameBufTest.h"
 #include "Tests/CubemapTest.h"
 #include "Tests/ShadowTest.h"
-#include "Tests/NormalMappingTest.h"
+#include "Tests/CurrentTest.h"
 
 
 int main()
 {
-	Sandbox* scene = new NormalMappingTest();
+	Sandbox* scene = new CurrentTest();
 
 	scene->Run();
 

@@ -10,10 +10,10 @@
 #include <memory>
 
 
-class NormalMappingTest : public Sandbox
+class CurrentTest : public Sandbox
 {
 public:
-	NormalMappingTest()
+	CurrentTest()
 	{
 		float start = glfwGetTime();
 		mModel = std::make_unique<Model>("Resources/Models/sponza/sponza.obj");
@@ -45,7 +45,7 @@ public:
 
 	}
 
-	~NormalMappingTest() {}
+	~CurrentTest() {}
 
 	void OnUpdate() override
 	{

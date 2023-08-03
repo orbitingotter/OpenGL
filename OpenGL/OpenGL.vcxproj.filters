@@ -1453,7 +1453,7 @@
     <ClInclude Include="Source\Tests\ShadowTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Tests\NormalMappingTest.h">
+    <ClInclude Include="Source\Tests\CurrentTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\DirectionalLight.h">
