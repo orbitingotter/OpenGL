@@ -117,6 +117,8 @@ public:
 				ImGui::Checkbox("Normal Mapping", &renderer.config.NomalMapping);
 				ImGui::Checkbox("Parallax Mapping", &renderer.config.ParallaxMapping);
 				ImGui::Checkbox("Gamma Correction", &renderer.config.GammaCorrection);
+				ImGui::DragFloat("Exposure", &renderer.config.exposure, 0.01f, 0.0f, 10.0f);
+
 
 
 				ImGui::Unindent();
@@ -131,6 +133,8 @@ public:
 				Renderer::ShadowMapDesc& desc = renderer.GetShadowDescription();
 				ImGui::DragFloat3("Directional Light", &renderer.GetLight().direction.x, 0.05f);
 				ImGui::ColorEdit3("Directional Color", &renderer.GetLight().color.x);
+				ImGui::DragFloat("Directional Intensity", &renderer.GetLight().intensity);
+
 				ImGui::DragFloat("Ortho", &desc.shadowOrtho, 1.0f, 5.0f, 500.0f);
 				ImGui::Checkbox("PCF enabled", &desc.pcfEnabled);
 				ImGui::DragInt("Sample Range", &desc.sampleRange, 2.0f, 1, 15);

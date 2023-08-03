@@ -71,7 +71,7 @@ unsigned int Shader::Compile(const std::string& shader, unsigned int type)
 		char* message = new char[length];
 		glGetShaderInfoLog(shaderID, length, &length, message);
 
-		std::cout << "ERROR : Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "pixel") << "shader.\n";
+		std::cout << "ERROR : Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "pixel") << "shader : " << mFilePath << std::endl;
 		std::cout << message << std::endl;
 		return 0;
 	}

@@ -19,6 +19,7 @@ void main()
 
 layout (binding = 0) uniform sampler2D uTexture;
 uniform bool uGamma;
+uniform float uExposure;
 
 in vec2 vTexCoords;
 
@@ -27,6 +28,9 @@ out vec4 fragColor;
 void main()
 {
     vec3 color = texture(uTexture, vTexCoords).rgb;
+
+    // hdr
+    color = vec3(1.0) - exp(-color * uExposure);
 
     if(uGamma)
         color = pow(color, vec3(1.0 / GAMMA));

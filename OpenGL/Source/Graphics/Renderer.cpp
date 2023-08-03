@@ -204,6 +204,11 @@ void Renderer::DrawSubmitted()
 
 	// SHADOW PASS
 	SetDepthTest(true);
+
+	glm::mat4 smProjection = glm::ortho(-mShadowDescription.shadowOrtho, mShadowDescription.shadowOrtho,
+		-mShadowDescription.shadowOrtho, mShadowDescription.shadowOrtho, 0.1f, 100.0f);
+	glm::mat4 smLightView = glm::lookAt(50.0f * -glm::normalize(mDirLight.direction), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
 	if (config.ShadowMapping)
 	{
 		glEnable(GL_CULL_FACE);
@@ -213,13 +218,8 @@ void Renderer::DrawSubmitted()
 		glBindFramebuffer(GL_FRAMEBUFFER, mShadowDescription.shadowMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		glm::mat4 smProjection = glm::ortho(-mShadowDescription.shadowOrtho, mShadowDescription.shadowOrtho,
-			-mShadowDescription.shadowOrtho, mShadowDescription.shadowOrtho, 0.1f, 100.0f);
-		glm::mat4 smLightView = glm::lookAt(50.0f * -glm::normalize(mDirLight.direction), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		mDirLight.smLightViewProjection = smProjection * smLightView;
-
 		mDefaultShadowShader->Bind();
-		mDefaultShadowShader->SetUniform("uSMProj", mDirLight.smLightViewProjection);
+		mDefaultShadowShader->SetUniform("uSMProj", smProjection * smLightView);
 
 		for (int i = 0; i < mModelList.size(); i++)
 		{
@@ -240,8 +240,10 @@ void Renderer::DrawSubmitted()
 	mDefaultShader->SetUniform("uCameraPos", mCameraRef.GetPosition());
 	mDefaultShader->SetUniform("uDirectionalLight", mDirLight.direction);
 	mDefaultShader->SetUniform("uDirectionalColor", mDirLight.color);
+	mDefaultShader->SetUniform("uDirectionalIntensity", mDirLight.intensity);
 
-	mDefaultShader->SetUniform("uSMProj", mDirLight.smLightViewProjection);
+
+	mDefaultShader->SetUniform("uSMProj", smProjection * smLightView);
 	mDefaultShader->SetUniform("uPcfEnabled", mShadowDescription.pcfEnabled);
 	mDefaultShader->SetUniform("uSampleRange", mShadowDescription.sampleRange);
 	mDefaultShader->SetUniform("uShadowEnabled", config.ShadowMapping);
@@ -282,6 +284,8 @@ void Renderer::DrawSubmitted()
 	mFrameBuf->BindColorAttachment(0);
 	mDefaultPostProcessShader->Bind();
 	mDefaultPostProcessShader->SetUniform("uGamma", config.GammaCorrection);
+	mDefaultPostProcessShader->SetUniform("uExposure", config.exposure);
+
 
 	Draw(*mPostProcessQuad, *mDefaultPostProcessShader);
 

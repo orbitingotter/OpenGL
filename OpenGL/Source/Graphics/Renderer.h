@@ -58,6 +58,7 @@ public:
 		bool ParallaxMapping = false;
 
 		bool GammaCorrection = true;
+		float exposure = 1.0f;
 	};
 
 

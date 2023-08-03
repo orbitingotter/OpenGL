@@ -21,7 +21,4 @@ public:
 	glm::vec3 direction;
 	glm::vec3 color;
 	float intensity;
-
-	glm::mat4 smLightViewProjection;
-
 };

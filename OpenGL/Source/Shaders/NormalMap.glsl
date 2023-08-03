@@ -84,6 +84,7 @@ layout (binding = 4) uniform sampler2D uSMTexture;
 out vec4 fragColor;
 
 uniform vec3 uDirectionalColor;
+uniform float uDirectionalIntensity;
 
 // test variables
 uniform bool uPcfEnabled;
@@ -171,9 +172,9 @@ vec3 DirLightCalc(vec3 normalTS, vec2 newTexCoords)
     vec3 reflectDir = reflect(-lightDir, normalTS);
     vec3 cameraDir = normalize(fsIn.vCameraTS - fsIn.vWorldPosTS);
 
-    diffuse = diffuseStrength * max(dot(normalize(normalTS), lightDir), 0.0);
-    specular = specularStrength * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);
-    ambient = 0.4f;
+    diffuse = uDirectionalIntensity * diffuseStrength * max(dot(normalize(normalTS), lightDir), 0.0);
+    specular = uDirectionalIntensity * specularStrength * pow(max(dot(reflectDir, cameraDir), 0.0), specularPower);
+    ambient = 0.2f;
 
     float shadow = 0.0f;
     if(uShadowEnabled)
@@ -198,7 +199,7 @@ float ShadowCalc(vec4 fragPosLight)
 
     //float bias = max(0.005 * (1.0 - dot(normalize(vNormal), normalize(-uDirectionalLight))), 0.005);
     float bias = 0.00;
-    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+    float shadow;
 
     if(projCoords.z > 1.0)
         shadow = 0.0;
@@ -219,6 +220,10 @@ float ShadowCalc(vec4 fragPosLight)
             }
         }
         shadow /= pow(uSampleRange,2);
+    }
+    else
+    {
+        shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
     }
 
     return shadow;
