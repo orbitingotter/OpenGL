@@ -283,8 +283,9 @@ void Renderer::DrawSubmitted()
 
 	mFrameBuf->BindColorAttachment(0);
 	mDefaultPostProcessShader->Bind();
-	mDefaultPostProcessShader->SetUniform("uGamma", config.GammaCorrection);
-	mDefaultPostProcessShader->SetUniform("uExposure", config.exposure);
+	mDefaultPostProcessShader->SetUniform("uGamma", config.PostProcessor.GammaCorrection);
+	mDefaultPostProcessShader->SetUniform("uToneMappingAlgLevel", (int)config.PostProcessor.ToneMappingAlg);
+	mDefaultPostProcessShader->SetUniform("uExposure", config.PostProcessor.Exposure);
 
 
 	Draw(*mPostProcessQuad, *mDefaultPostProcessShader);

@@ -116,10 +116,6 @@ public:
 				ImGui::Checkbox("Shadow Mapping", &renderer.config.ShadowMapping);
 				ImGui::Checkbox("Normal Mapping", &renderer.config.NomalMapping);
 				ImGui::Checkbox("Parallax Mapping", &renderer.config.ParallaxMapping);
-				ImGui::Checkbox("Gamma Correction", &renderer.config.GammaCorrection);
-				ImGui::DragFloat("Exposure", &renderer.config.exposure, 0.01f, 0.0f, 10.0f);
-
-
 
 				ImGui::Unindent();
 			}
@@ -133,7 +129,7 @@ public:
 				Renderer::ShadowMapDesc& desc = renderer.GetShadowDescription();
 				ImGui::DragFloat3("Directional Light", &renderer.GetLight().direction.x, 0.05f);
 				ImGui::ColorEdit3("Directional Color", &renderer.GetLight().color.x);
-				ImGui::DragFloat("Directional Intensity", &renderer.GetLight().intensity);
+				ImGui::DragFloat("Directional Intensity", &renderer.GetLight().intensity, 0.1f, 0.0f, 200.0f);
 
 				ImGui::DragFloat("Ortho", &desc.shadowOrtho, 1.0f, 5.0f, 500.0f);
 				ImGui::Checkbox("PCF enabled", &desc.pcfEnabled);
@@ -146,6 +142,20 @@ public:
 
 			ImGui::Separator();
 
+			if (ImGui::CollapsingHeader("Post Processing", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Indent(16.0f);
+
+				ImGui::Checkbox("Gamma Correction", &renderer.config.PostProcessor.GammaCorrection);
+
+				ImGui::Combo("Tonemapping", reinterpret_cast<int*>(&renderer.config.PostProcessor.ToneMappingAlg),
+					"Reinhard\0Simple Exposure\0");
+
+				if(renderer.config.PostProcessor.ToneMappingAlg == Renderer::ToneMappingAlg::Exposure)
+					ImGui::DragFloat("Exposure", &renderer.config.PostProcessor.Exposure, 0.005f, 0.0f, 10.0f);
+
+				ImGui::Unindent();
+			}
 
 			ImGui::End();
 		}

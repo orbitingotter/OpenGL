@@ -49,6 +49,16 @@ public:
 		int sampleRange = 5;
 	};
 
+	enum class ToneMappingAlg { Reinhard = 0, Exposure = 1 };
+
+	struct PostProcessConfig
+	{
+		bool GammaCorrection = true;
+
+		enum class ToneMappingAlg ToneMappingAlg = ToneMappingAlg::Exposure;
+		float Exposure = 1.0f;
+	};
+
 	struct Configuration
 	{
 		bool WireFrame = false;
@@ -57,8 +67,7 @@ public:
 		bool NomalMapping = true;
 		bool ParallaxMapping = false;
 
-		bool GammaCorrection = true;
-		float exposure = 1.0f;
+		PostProcessConfig PostProcessor;
 	};
 
 

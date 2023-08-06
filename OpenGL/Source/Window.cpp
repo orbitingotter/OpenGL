@@ -24,7 +24,7 @@ Window::Window(const std::string& title, int width, int height, bool vSync, bool
 		std::cout << "ERROR : GLFW window could not be created" << std::endl;
 		return;
 	}
-
+	glfwSetWindowPos(mWindow, (1920 - mWidth) / 2, (1080 - mHeight) / 2);
 	glfwMakeContextCurrent(mWindow);
 	glfwSwapInterval(mVSync);
 
