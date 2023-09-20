@@ -5,22 +5,17 @@ it provides a basic abstraction for VAO, VBO, IBO, Textures, Layout, Windowing s
 with some libraries
 and used for testing various graphics / rendering techniques such as -
 
-- Blending
-- Camera System
-- Per pixel lighting
-- Model loading
-  - Meshes
-  - Materials
-  - Textures
-- Cube Maps (Skybox)
-- Shadow Mapping
-- Normal Mapping
-- Culling (Frustum, Occlusion)*
-- Scene Graph*
-- Deferred Rendering*
-- PBR*
+| |  |  |  |
+| ------------- | ------------- | ------------- | ------------- |
+| **Basics**  | Camera System | Per Pixel Lighting | Cube Maps(Skybox) |
+| **Model loading**| Meshes | Textures | Materials |
+| **Mapping**  | Shadow Mapping | Normal Mapping | Parallax Mapping |
+| **Culling** | Back-Face| Frustum | Occlusion |
+| **Lighting** | Gamma Correction | HDR | Bloom* |
+|  | Deferred Rendering* | SSAO*  | PBR* |
+                     
 
-*TODO
+**TODO*
 
 ---
 ### Screenshots
